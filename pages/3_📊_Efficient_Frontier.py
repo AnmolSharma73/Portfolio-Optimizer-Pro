@@ -466,20 +466,12 @@ if generate_btn:
     # -- Layout -----
     fig.update_layout(
         **_chart_layout("", height=620),
-        xaxis_title="Annualized Volatility (σ)",
-        yaxis_title="Annualized Expected Return (μ)",
-        xaxis=dict(
-            tickformat=".0%",
-            gridcolor="rgba(255,255,255,0.06)",
-            zerolinecolor="rgba(255,255,255,0.1)",
-        ),
-        yaxis=dict(
-            tickformat=".0%",
-            gridcolor="rgba(255,255,255,0.06)",
-            zerolinecolor="rgba(255,255,255,0.1)",
-        ),
         hovermode="closest",
     )
+    fig.update_xaxes(title_text="Annualized Volatility (σ)", tickformat=".0%",
+                     gridcolor="rgba(255,255,255,0.06)", zerolinecolor="rgba(255,255,255,0.1)")
+    fig.update_yaxes(title_text="Annualized Expected Return (μ)", tickformat=".0%",
+                     gridcolor="rgba(255,255,255,0.06)", zerolinecolor="rgba(255,255,255,0.1)")
 
     st.plotly_chart(fig, use_container_width=True, key="efficient_frontier_chart")
 
