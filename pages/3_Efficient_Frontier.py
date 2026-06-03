@@ -129,8 +129,7 @@ def _weights_donut(weights: dict, title: str = "Portfolio Allocation") -> go.Fig
         ]
     )
     fig.update_layout(
-        **get_chart_layout(title, height=380),
-        showlegend=False,
+        **get_chart_layout(title, height=380, showlegend=False),
         annotations=[
             dict(
                 text="<b>Weights</b>",
