@@ -71,6 +71,10 @@ def init_session_state() -> None:
         "returns_data": None,
         "selected_period": "5y",
         "risk_free_rate": 0.05,
+        "theme": "dark",
+        "language": "en",
+        "currency": "USD",
+        "fx_rate": 1.0,
     }
     for key, value in defaults.items():
         if key not in st.session_state:

@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DocConvert — Custom Styles & Animations
+   Premium dark-mode design with glassmorphism and micro-animations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Base Theme ──────────────────────────────────────────────────────────── */
+
+:root {
+  --color-background: #030712;
+  --color-foreground: #f8fafc;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Animated Background Gradient ────────────────────────────────────────── */
+
+.bg-mesh {
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 30%, rgba(6, 182, 212, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 80%, rgba(168, 85, 247, 0.04) 0%, transparent 60%),
+    var(--color-background);
+  background-attachment: fixed;
+}
+
+/* ─── Glassmorphism Utility ───────────────────────────────────────────────── */
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Custom Scrollbar ────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── Slide-in Animation ──────────────────────────────────────────────────── */
+
+.animate-in {
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Floating Particle Animations (Drag-and-Drop) ────────────────────────── */
+
+.animate-float-1 {
+  animation: float1 1.5s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float2 2s ease-in-out infinite 0.3s;
+}
+
+.animate-float-3 {
+  animation: float3 1.8s ease-in-out infinite 0.6s;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  50% { transform: translate(-8px, -12px) scale(1.2); opacity: 1; }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(6px, -10px) scale(1.3); opacity: 1; }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate(4px, -14px) scale(1.1); opacity: 1; }
+}
+
+/* ─── Slow Spin Animation ─────────────────────────────────────────────────── */
+
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Gradient Text ───────────────────────────────────────────────────────── */
+
+.text-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #67e8f9 50%, #a78bfa 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ─── Pulse Glow Effect ───────────────────────────────────────────────────── */
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(124, 58, 237, 0.1),
+      0 0 40px rgba(124, 58, 237, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(124, 58, 237, 0.2),
+      0 0 60px rgba(124, 58, 237, 0.1);
+  }
+}
+
+/* ─── Grid Background Pattern ─────────────────────────────────────────────── */
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ─── Selection Colors ────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(124, 58, 237, 0.3);
+  color: white;
+}
+
+/* ─── Focus Styles ────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.5);
+  outline-offset: 2px;
+  border-radius: 8px;
+}

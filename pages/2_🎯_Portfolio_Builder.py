@@ -16,9 +16,10 @@ from data.processor import DataProcessor
 from optimization.markowitz import MarkowitzOptimizer
 from risk.metrics import RiskMetrics
 from visualization.charts import plot_portfolio_allocation, plot_correlation_heatmap, plot_risk_return_scatter
-from visualization.styles import get_chart_layout, COLORS
+from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS, OPTIMIZATION_METHODS, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, init_session_state
+from utils.translations import _
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Portfolio Builder", page_icon="🎯", layout="wide")
@@ -44,7 +45,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
-st.sidebar.markdown("## 🎯 Portfolio Builder")
+st.sidebar.markdown(f"## {_('portfolio_builder')}")
 st.sidebar.markdown("---")
 
 selected_tickers = st.sidebar.multiselect(
@@ -79,7 +80,11 @@ st.sidebar.markdown("---")
 optimize_clicked = st.sidebar.button("🚀 OPTIMIZE PORTFOLIO", use_container_width=True, type="primary")
 
 # ── Main Content ─────────────────────────────────────────────────────────────
-st.markdown("# 🎯 Portfolio Builder")
+fx = st.session_state.get("fx_rate", 1.0)
+curr = st.session_state.get("currency", "USD")
+curr_sym = curr
+
+st.markdown(f"# {_('portfolio_builder')}")
 st.markdown("*Select stocks and optimize your portfolio allocation*")
 st.markdown("---")
 
@@ -108,7 +113,7 @@ for i, t in enumerate(selected_tickers):
     with cols[i % 5]:
         latest = prices[t].iloc[-1] if t in prices.columns else 0
         daily_ret = returns[t].iloc[-1] if t in returns.columns else 0
-        st.metric(t, f"${latest:,.2f}", f"{daily_ret:.2%}")
+        st.metric(t, format_currency(latest * fx, curr_sym), f"{daily_ret:.2%}")
 
 st.markdown("---")
 
@@ -116,12 +121,12 @@ st.markdown("---")
 col1, col2 = st.columns(2)
 with col1:
     fig_corr = plot_correlation_heatmap(returns.corr())
-    st.plotly_chart(fig_corr, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig_corr), use_container_width=True)
 with col2:
     ann_rets = DataProcessor.calculate_annualized_returns(returns)
     ann_vols = returns.std() * np.sqrt(TRADING_DAYS)
     fig_rr = plot_risk_return_scatter(list(ann_rets.index), ann_rets.values, ann_vols.values)
-    st.plotly_chart(fig_rr, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig_rr), use_container_width=True)
 
 # ── Optimization ─────────────────────────────────────────────────────────────
 if optimize_clicked:
@@ -160,10 +165,10 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
     st.markdown("## 🏆 Optimized Portfolio")
 
     mc1, mc2, mc3, mc4 = st.columns(4)
-    mc1.markdown(f"""<div class="result-card"><div class="result-label">Expected Return</div><div class="result-value">{result['expected_return']:.2%}</div></div>""", unsafe_allow_html=True)
-    mc2.markdown(f"""<div class="result-card"><div class="result-label">Volatility</div><div class="result-value">{result['volatility']:.2%}</div></div>""", unsafe_allow_html=True)
-    mc3.markdown(f"""<div class="result-card"><div class="result-label">Sharpe Ratio</div><div class="result-value">{result['sharpe_ratio']:.3f}</div></div>""", unsafe_allow_html=True)
-    mc4.markdown(f"""<div class="result-card"><div class="result-label">Investment</div><div class="result-value">{format_currency(investment_amount)}</div></div>""", unsafe_allow_html=True)
+    mc1.markdown(f"""<div class="result-card"><div class="result-label">{_('expected_return')}</div><div class="result-value">{{result['expected_return']:.2%}}</div></div>""", unsafe_allow_html=True)
+    mc2.markdown(f"""<div class="result-card"><div class="result-label">{_('volatility')}</div><div class="result-value">{{result['volatility']:.2%}}</div></div>""", unsafe_allow_html=True)
+    mc3.markdown(f"""<div class="result-card"><div class="result-label">{_('sharpe_ratio')}</div><div class="result-value">{{result['sharpe_ratio']:.3f}}</div></div>""", unsafe_allow_html=True)
+    mc4.markdown(f"""<div class="result-card"><div class="result-label">{_('investment_amount')}</div><div class="result-value">{{format_currency(investment_amount * fx, curr_sym)}}</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -172,7 +177,7 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
     with alloc_col:
         filtered = {k: v for k, v in weights.items() if abs(v) > 0.001}
         fig_alloc = plot_portfolio_allocation(filtered, title="Optimal Allocation")
-        st.plotly_chart(fig_alloc, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_alloc), use_container_width=True)
 
     with table_col:
         st.markdown("### 📊 Portfolio Weights")
@@ -183,9 +188,9 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
                 price = prices[t].iloc[-1] if t in prices.columns and prices[t].iloc[-1] > 0 else 1
                 rows.append({
                     'Ticker': t, 'Weight': f"{w:.2%}",
-                    'Amount': format_currency(amt),
+                    'Amount': format_currency(amt * fx, curr_sym),
                     'Shares': f"{amt / price:.1f}",
-                    'Price': f"${price:,.2f}"
+                    'Price': format_currency(price * fx, curr_sym)
                 })
         if rows:
             st.dataframe(pd.DataFrame(rows).set_index('Ticker'), use_container_width=True, height=350)

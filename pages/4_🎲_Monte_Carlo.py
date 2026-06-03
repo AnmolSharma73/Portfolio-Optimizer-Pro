@@ -15,9 +15,10 @@ from data.fetcher import StockDataFetcher
 from data.processor import DataProcessor
 from optimization.monte_carlo import MonteCarloSimulator
 from visualization.charts import plot_monte_carlo_results, plot_portfolio_allocation, plot_future_simulation
-from visualization.styles import get_chart_layout, COLORS
+from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS, COLOR_PALETTE, DEFAULT_PERIOD
 from utils.helpers import format_currency, format_percentage, init_session_state
+from utils.translations import _
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Monte Carlo Simulation", page_icon="🎲", layout="wide")
@@ -49,7 +50,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
-st.sidebar.markdown("## 🎲 Monte Carlo Simulation")
+st.sidebar.markdown(f"## {_('monte_carlo')}")
 st.sidebar.markdown("---")
 
 # Use portfolio from session state or let user pick
@@ -84,7 +85,11 @@ num_paths = st.sidebar.slider("Number of Paths", 100, 2000, 500, 100)
 run_future = st.sidebar.button("🔮 SIMULATE FUTURE", use_container_width=True)
 
 # ── Main Content ─────────────────────────────────────────────────────────────
-st.markdown("# 🎲 Monte Carlo Simulation")
+fx = st.session_state.get("fx_rate", 1.0)
+curr = st.session_state.get("currency", "USD")
+curr_sym = curr
+
+st.markdown(f"# {_('monte_carlo')}")
 st.markdown("*Explore thousands of random portfolio allocations to find optimal strategies*")
 st.markdown("---")
 
@@ -171,7 +176,7 @@ if st.session_state.get('mc_results'):
     # Monte Carlo Scatter Plot
     st.markdown("### 📊 Simulation Results")
     fig_mc = plot_monte_carlo_results(mc_results, optimal)
-    st.plotly_chart(fig_mc, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig_mc), use_container_width=True)
 
     # Optimal portfolios side by side
     st.markdown("### 🏅 Optimal Portfolios Comparison")
@@ -184,7 +189,7 @@ if st.session_state.get('mc_results'):
                 max_s['weights'],
                 title=f"Max Sharpe ({max_s.get('sharpe', 0):.3f})"
             )
-            st.plotly_chart(fig_ms, use_container_width=True)
+            st.plotly_chart(apply_dynamic_theme(fig_ms), use_container_width=True)
 
             ms_data = [{
                 'Metric': m,
@@ -203,7 +208,7 @@ if st.session_state.get('mc_results'):
                 min_v['weights'],
                 title=f"Min Vol ({min_v.get('volatility', 0):.2%})"
             )
-            st.plotly_chart(fig_mv, use_container_width=True)
+            st.plotly_chart(apply_dynamic_theme(fig_mv), use_container_width=True)
 
             mv_data = [{
                 'Metric': m,
@@ -229,7 +234,7 @@ if st.session_state.get('mc_results'):
         fig_ret_dist.update_layout(**get_chart_layout(title="Return Distribution", height=400))
         fig_ret_dist.update_xaxes(title_text="Expected Return", tickformat=".1%")
         fig_ret_dist.update_yaxes(title_text="Frequency")
-        st.plotly_chart(fig_ret_dist, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_ret_dist), use_container_width=True)
 
     with dist_col2:
         fig_sr_dist = go.Figure()
@@ -241,7 +246,7 @@ if st.session_state.get('mc_results'):
         fig_sr_dist.update_layout(**get_chart_layout(title="Sharpe Ratio Distribution", height=400))
         fig_sr_dist.update_xaxes(title_text="Sharpe Ratio")
         fig_sr_dist.update_yaxes(title_text="Frequency")
-        st.plotly_chart(fig_sr_dist, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_sr_dist), use_container_width=True)
 
 # ── Future Simulation ────────────────────────────────────────────────────────
 if run_future and st.session_state.get('mc_simulator'):
@@ -268,7 +273,7 @@ if run_future and st.session_state.get('mc_simulator'):
 
             if simulation_paths is not None and len(simulation_paths) > 0:
                 fig_future = plot_future_simulation(simulation_paths, title="Simulated Portfolio Value")
-                st.plotly_chart(fig_future, use_container_width=True)
+                st.plotly_chart(apply_dynamic_theme(fig_future), use_container_width=True)
 
                 # Summary statistics
                 final_values = simulation_paths[:, -1]
@@ -276,14 +281,14 @@ if run_future and st.session_state.get('mc_simulator'):
 
                 fs1, fs2, fs3, fs4 = st.columns(4)
                 fs1.metric("Median Final Value",
-                          format_currency(np.median(final_values)),
+                          format_currency(np.median(final_values) * fx, curr_sym),
                           f"{(np.median(final_values)/initial_value - 1):.1%}")
                 fs2.metric("5th Percentile (Worst)",
-                          format_currency(np.percentile(final_values, 5)),
+                          format_currency(np.percentile(final_values, 5) * fx, curr_sym),
                           f"{(np.percentile(final_values, 5)/initial_value - 1):.1%}",
                           delta_color="inverse")
                 fs3.metric("95th Percentile (Best)",
-                          format_currency(np.percentile(final_values, 95)),
+                          format_currency(np.percentile(final_values, 95) * fx, curr_sym),
                           f"{(np.percentile(final_values, 95)/initial_value - 1):.1%}")
                 fs4.metric("Prob. of Profit",
                           f"{(final_values > initial_value).mean():.1%}")

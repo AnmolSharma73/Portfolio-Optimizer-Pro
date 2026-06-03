@@ -18,10 +18,11 @@ from data.processor import DataProcessor
 from risk.metrics import RiskMetrics
 from visualization.charts import (plot_drawdown, plot_correlation_heatmap,
                                    plot_rolling_metrics, plot_cumulative_returns)
-from visualization.styles import get_chart_layout, COLORS
+from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import (DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS,
                               COLOR_PALETTE, DEFAULT_BENCHMARK, DEFAULT_PERIOD)
 from utils.helpers import format_currency, format_percentage, init_session_state
+from utils.translations import _
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Risk Analysis", page_icon="⚖️", layout="wide")
@@ -65,7 +66,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
-st.sidebar.markdown("## ⚖️ Risk Analysis")
+st.sidebar.markdown(f"## {_('risk_analysis')}")
 st.sidebar.markdown("---")
 
 # Portfolio selection
@@ -96,7 +97,11 @@ confidence_level = st.sidebar.slider("VaR Confidence Level", 0.90, 0.99, 0.95, 0
 analyze_clicked = st.sidebar.button("📊 ANALYZE RISK", use_container_width=True, type="primary")
 
 # ── Main Content ─────────────────────────────────────────────────────────────
-st.markdown("# ⚖️ Risk Analysis")
+fx = st.session_state.get("fx_rate", 1.0)
+curr = st.session_state.get("currency", "USD")
+curr_sym = curr
+
+st.markdown(f"# {_('risk_analysis')}")
 st.markdown("*Comprehensive risk metrics, VaR analysis, drawdowns & rolling performance*")
 st.markdown("---")
 
@@ -227,7 +232,7 @@ with tab_overview:
         if benchmark_returns is not None:
             returns_dict[benchmark_name] = benchmark_returns
         fig_cum = plot_cumulative_returns(returns_dict)
-        st.plotly_chart(fig_cum, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_cum), use_container_width=True)
 
         # Per-stock metrics if multiple
         if len(selected_tickers) > 1:
@@ -249,7 +254,7 @@ with tab_overview:
 # ── Tab 2: Drawdown ─────────────────────────────────────────────────────────
 with tab_drawdown:
     fig_dd = plot_drawdown(portfolio_returns, title="Portfolio Drawdown")
-    st.plotly_chart(fig_dd, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig_dd), use_container_width=True)
 
     dd_series = RiskMetrics.drawdown_series(portfolio_returns)
     max_dd_val = dd_series.min()
@@ -292,7 +297,7 @@ with tab_var:
         fig_var.update_layout(**get_chart_layout(title=f"VaR at {confidence_level:.0%} Confidence", height=450))
         fig_var.update_xaxes(title_text="Daily Return")
         fig_var.update_yaxes(title_text="Frequency")
-        st.plotly_chart(fig_var, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_var), use_container_width=True)
 
     with var_col2:
         st.markdown("#### 📋 VaR Summary")
@@ -304,11 +309,11 @@ with tab_var:
 
         var_data = [
             {'Method': 'Historical VaR', 'Daily VaR': f"{var_historical:.4f}",
-             'Dollar Impact': format_currency(abs(var_historical) * inv_amt)},
+             'Dollar Impact': format_currency(abs(var_historical) * inv_amt * fx, curr_sym)},
             {'Method': 'Parametric VaR', 'Daily VaR': f"{var_parametric:.4f}",
-             'Dollar Impact': format_currency(abs(var_parametric) * inv_amt)},
+             'Dollar Impact': format_currency(abs(var_parametric) * inv_amt * fx, curr_sym)},
             {'Method': 'CVaR (Expected Shortfall)', 'Daily VaR': f"{cvar:.4f}",
-             'Dollar Impact': format_currency(abs(cvar) * inv_amt)},
+             'Dollar Impact': format_currency(abs(cvar) * inv_amt * fx, curr_sym)},
         ]
         st.dataframe(pd.DataFrame(var_data).set_index('Method'), use_container_width=True)
 
@@ -316,8 +321,8 @@ with tab_var:
         st.markdown("#### 📖 Interpretation")
         st.markdown(f"""
         - **VaR ({confidence_level:.0%})**: On {(1-confidence_level)*100:.0f}% of days, the portfolio could lose more than 
-          **{format_currency(abs(var_historical) * inv_amt)}** on a **{format_currency(inv_amt)}** investment.
-        - **CVaR**: When losses exceed VaR, the average loss is **{format_currency(abs(cvar) * inv_amt)}**.
+          **{format_currency(abs(var_historical) * inv_amt * fx, curr_sym)}** on a **{format_currency(inv_amt * fx, curr_sym)}** investment.
+        - **CVaR**: When losses exceed VaR, the average loss is **{format_currency(abs(cvar) * inv_amt * fx, curr_sym)}**.
         """)
 
 # ── Tab 4: Rolling Metrics ──────────────────────────────────────────────────
@@ -343,7 +348,7 @@ with tab_rolling:
                         annotation_text="Sharpe=1")
         fig_rs.update_layout(**get_chart_layout(
             title=f"Rolling Sharpe Ratio ({rolling_window}d)", height=400))
-        st.plotly_chart(fig_rs, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_rs), use_container_width=True)
 
     with r_col2:
         fig_rv = go.Figure()
@@ -357,12 +362,12 @@ with tab_rolling:
         fig_rv.update_layout(**get_chart_layout(
             title=f"Rolling Volatility ({rolling_window}d)", height=400))
         fig_rv.update_yaxes(tickformat='.1%')
-        st.plotly_chart(fig_rv, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_rv), use_container_width=True)
 
 # ── Tab 5: Correlation ──────────────────────────────────────────────────────
 with tab_corr:
     if len(selected_tickers) > 1:
         fig_corr = plot_correlation_heatmap(returns.corr())
-        st.plotly_chart(fig_corr, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_corr), use_container_width=True)
     else:
         st.info("Select multiple stocks to see correlation analysis.")

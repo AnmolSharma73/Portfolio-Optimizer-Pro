@@ -18,9 +18,10 @@ from data.fetcher import StockDataFetcher
 from data.processor import DataProcessor
 from risk.metrics import RiskMetrics
 from visualization.charts import plot_stock_price, plot_correlation_heatmap, plot_risk_return_scatter
-from visualization.styles import get_chart_layout, COLORS
+from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, DEFAULT_PERIOD, TRADING_DAYS, RISK_FREE_RATE, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, format_large_number
+from utils.translations import _
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Stock Analysis", page_icon="📈", layout="wide")
@@ -79,13 +80,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Sidebar Controls ─────────────────────────────────────────────────────────
-st.sidebar.markdown("## 📈 Stock Analysis")
+st.sidebar.markdown(f"## {_('stock_analysis')}")
 st.sidebar.markdown("---")
 
 ticker = st.sidebar.text_input(
-    "🔍 Enter Ticker Symbol",
+    f"🔍 {_('select_ticker')}",
     value="AAPL",
-    help="Enter a valid stock ticker (e.g., AAPL, GOOGL, MSFT)"
 ).upper().strip()
 
 period_options = {"1 Month": "1mo", "3 Months": "3mo", "6 Months": "6mo",
@@ -108,8 +108,11 @@ show_bollinger = st.sidebar.checkbox("📉 Bollinger Bands", value=False)
 
 # ── Main Content ─────────────────────────────────────────────────────────────
 fetcher = StockDataFetcher()
+fx = st.session_state.get("fx_rate", 1.0)
+curr = st.session_state.get("currency", "USD")
+curr_sym = curr
 
-st.markdown("# 📈 Stock Analysis")
+st.markdown(f"# {_('stock_analysis')}")
 st.markdown("*Deep-dive into individual stock performance, technicals & comparisons*")
 st.markdown("---")
 
@@ -146,9 +149,9 @@ st.markdown(f"""
             <div class="stock-sector">{sector} • {industry}</div>
         </div>
         <div style="text-align: right;">
-            <div class="price-big">${current_price:,.2f}</div>
+            <div class="price-big">{format_currency(current_price * fx, curr_sym)}</div>
             <div style="font-size: 1.1rem; color: {change_color}; font-weight: 600;">
-                {change_arrow} ${abs(price_change):,.2f} ({price_change_pct:+.2f}%)
+                {change_arrow} {format_currency(abs(price_change) * fx, curr_sym)} ({price_change_pct:+.2f}%)
             </div>
         </div>
     </div>
@@ -159,9 +162,9 @@ st.markdown(f"""
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 stats = {
-    "Market Cap": format_large_number(stock_info.get('marketCap', 0)),
-    "52W High": f"${stock_info.get('fiftyTwoWeekHigh', 0):,.2f}",
-    "52W Low": f"${stock_info.get('fiftyTwoWeekLow', 0):,.2f}",
+    _("market_cap"): format_currency((stock_info.get('marketCap', 0) * fx), curr_sym),
+    "52W High": format_currency((stock_info.get('fiftyTwoWeekHigh', 0) * fx), curr_sym),
+    "52W Low": format_currency((stock_info.get('fiftyTwoWeekLow', 0) * fx), curr_sym),
     "Avg Volume": format_large_number(stock_info.get('averageVolume', 0)),
     "P/E Ratio": f"{stock_info.get('trailingPE', 'N/A'):.2f}" if isinstance(stock_info.get('trailingPE'), (int, float)) else "N/A",
     "Div Yield": format_percentage(stock_info.get('dividendYield', 0)) if stock_info.get('dividendYield') else "N/A"
@@ -244,10 +247,10 @@ with tab_price:
     layout = get_chart_layout(title=f"{ticker} Price Chart", height=650)
     layout['xaxis_rangeslider_visible'] = False
     fig.update_layout(**layout)
-    fig.update_yaxes(title_text="Price ($)", row=1, col=1)
+    fig.update_yaxes(title_text=f"Price ({curr})", row=1, col=1)
     fig.update_yaxes(title_text="Volume", row=2, col=1)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig), use_container_width=True)
 
 # ── Tab 2: Returns Analysis ─────────────────────────────────────────────────
 with tab_returns:
@@ -292,7 +295,7 @@ with tab_returns:
         fig_dist.update_layout(**get_chart_layout(title="Returns Distribution", height=400))
         fig_dist.update_xaxes(title_text="Daily Return")
         fig_dist.update_yaxes(title_text="Frequency")
-        st.plotly_chart(fig_dist, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_dist), use_container_width=True)
 
     with col_ret2:
         # Cumulative returns
@@ -306,7 +309,7 @@ with tab_returns:
             name='Cumulative Return'
         ))
         fig_cum.update_layout(**get_chart_layout(title="Cumulative Returns", height=400))
-        st.plotly_chart(fig_cum, use_container_width=True)
+        st.plotly_chart(apply_dynamic_theme(fig_cum), use_container_width=True)
 
     # Drawdown chart
     dd_series = RiskMetrics.drawdown_series(returns['Close'])
@@ -320,7 +323,7 @@ with tab_returns:
     ))
     fig_dd.update_layout(**get_chart_layout(title="Drawdown Analysis", height=350))
     fig_dd.update_yaxes(title_text="Drawdown", tickformat='.1%')
-    st.plotly_chart(fig_dd, use_container_width=True)
+    st.plotly_chart(apply_dynamic_theme(fig_dd), use_container_width=True)
 
 # ── Tab 3: Comparison ────────────────────────────────────────────────────────
 with tab_compare:
@@ -348,7 +351,7 @@ with tab_compare:
                     name=t, line=dict(color=gradient_colors[i % len(gradient_colors)], width=2)
                 ))
             fig_comp.update_layout(**get_chart_layout(title="Normalized Price Comparison (Base=100)", height=500))
-            st.plotly_chart(fig_comp, use_container_width=True)
+            st.plotly_chart(apply_dynamic_theme(fig_comp), use_container_width=True)
 
             c1, c2 = st.columns(2)
 
@@ -359,13 +362,13 @@ with tab_compare:
                 fig_rr = plot_risk_return_scatter(
                     list(ann_rets.index), ann_rets.values, ann_vols.values
                 )
-                st.plotly_chart(fig_rr, use_container_width=True)
+                st.plotly_chart(apply_dynamic_theme(fig_rr), use_container_width=True)
 
             with c2:
                 # Correlation heatmap
                 corr = multi_returns.corr()
                 fig_corr = plot_correlation_heatmap(corr)
-                st.plotly_chart(fig_corr, use_container_width=True)
+                st.plotly_chart(apply_dynamic_theme(fig_corr), use_container_width=True)
 
             # Comparison table
             st.markdown("### 📋 Comparison Table")

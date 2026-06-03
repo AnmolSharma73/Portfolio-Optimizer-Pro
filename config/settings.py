@@ -10,17 +10,38 @@ APP_VERSION: str = "1.0.0"
 
 # ── Default Portfolio Configuration ───────────────────────────────────────────
 DEFAULT_TICKERS: List[str] = [
-    "AAPL",   # Apple
-    "GOOGL",  # Alphabet
-    "MSFT",   # Microsoft
-    "AMZN",   # Amazon
-    "TSLA",   # Tesla
-    "META",   # Meta Platforms
-    "NVDA",   # NVIDIA
-    "JPM",    # JPMorgan Chase
-    "V",      # Visa
-    "JNJ",    # Johnson & Johnson
+    # US
+    "AAPL", "MSFT", "NVDA",
+    # India
+    "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS",
+    # China
+    "TCEHY", "BABA",
+    # Europe
+    "ASML.AS", "LVMUY", "SAP",
+    # Japan
+    "7203.T", "6758.T", # Toyota, Sony
+    # South Korea
+    "005930.KS", # Samsung
 ]
+
+# ── Supported Currencies ──────────────────────────────────────────────────────
+SUPPORTED_CURRENCIES: Dict[str, str] = {
+    "USD ($)": "USD",
+    "INR (₹)": "INR",
+    "EUR (€)": "EUR",
+    "JPY (¥)": "JPY",
+    "KRW (₩)": "KRW",
+    "CNY (¥)": "CNY",
+}
+
+# ── Supported Languages ───────────────────────────────────────────────────────
+SUPPORTED_LANGUAGES: Dict[str, str] = {
+    "English": "en",
+    "Hindi": "hi",
+    "Spanish": "es",
+    "French": "fr",
+    "Chinese": "zh",
+}
 
 # ── Financial Parameters ──────────────────────────────────────────────────────
 RISK_FREE_RATE: float = 0.05

@@ -75,6 +75,26 @@ def _fetch_current_price(ticker: str) -> Optional[float]:
     except Exception:
         return None
 
+@st.cache_data(ttl=600, show_spinner=False)
+def _fetch_exchange_rate(from_currency: str, to_currency: str) -> float:
+    """Fetch live exchange rate from Yahoo Finance."""
+    if from_currency == to_currency:
+        return 1.0
+    try:
+        # e.g., 'EURUSD=X'
+        ticker = f"{from_currency}{to_currency}=X"
+        data = yf.Ticker(ticker).history(period="1d")
+        if not data.empty:
+            return float(data["Close"].iloc[-1])
+        # Try inverse if direct fails
+        inv_ticker = f"{to_currency}{from_currency}=X"
+        inv_data = yf.Ticker(inv_ticker).history(period="1d")
+        if not inv_data.empty:
+            return 1.0 / float(inv_data["Close"].iloc[-1])
+    except Exception:
+        pass
+    return 1.0
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Public class
@@ -106,3 +126,7 @@ class StockDataFetcher:
             info = self.get_stock_info(tkr)
             caps[tkr] = info.get("marketCap")
         return caps
+
+    def get_exchange_rate(self, from_currency: str, to_currency: str) -> float:
+        """Fetch live exchange rate."""
+        return _fetch_exchange_rate(from_currency, to_currency)

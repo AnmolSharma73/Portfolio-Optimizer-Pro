@@ -29,6 +29,8 @@ from config.settings import (
     TRADING_DAYS,
 )
 from utils.helpers import format_percentage, format_currency, create_metric_card
+from visualization.styles import apply_dynamic_theme
+from utils.translations import _
 
 # ── Page configuration ────────────────────────────────────────────────────────
 st.set_page_config(
@@ -187,7 +189,7 @@ def _weights_donut(weights: dict, title: str = "Portfolio Allocation") -> go.Fig
             )
         ],
     )
-    return fig
+    return apply_dynamic_theme(fig)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -238,7 +240,7 @@ with st.sidebar:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.markdown(
-    '<h1 class="header-gradient">📊 Efficient Frontier</h1>',
+    f'<h1 class="header-gradient">📊 {_("efficient_frontier")}</h1>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -473,7 +475,7 @@ if generate_btn:
     fig.update_yaxes(title_text="Annualized Expected Return (μ)", tickformat=".0%",
                      gridcolor="rgba(255,255,255,0.06)", zerolinecolor="rgba(255,255,255,0.1)")
 
-    st.plotly_chart(fig, use_container_width=True, key="efficient_frontier_chart")
+    st.plotly_chart(apply_dynamic_theme(fig), use_container_width=True, key="efficient_frontier_chart")
 
     # ══════════════════════════════════════════════════════════════════════
     # Tabbed portfolio details
