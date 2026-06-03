@@ -171,18 +171,7 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
 
         nav_html = '<div style="display: flex; flex-direction: column; gap: 0.6rem; padding-top: 0.5rem;">'
         for path, name, svg in nav_items:
-            # Check if this is the active page to highlight it
-            # Since we can't cleanly check URL in Streamlit without reruns, we'll style active on hover
-            nav_html += f'''
-            <a href="{path}" target="_self" style="
-                display: flex; align-items: center; padding: 0.7rem 1rem;
-                background: {t_card}; border: 1px solid {t_border};
-                border-radius: 8px; color: {t_fg}; text-decoration: none;
-                font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease;">
-                <div style="margin-right: 12px; display: flex; align-items: center;">{svg}</div>
-                {name}
-            </a>
-            '''
+            nav_html += f'<a href="{path}" target="_self" style="display: flex; align-items: center; padding: 0.7rem 1rem; background: {t_card}; border: 1px solid {t_border}; border-radius: 8px; color: {t_fg}; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease;"><div style="margin-right: 12px; display: flex; align-items: center;">{svg}</div>{name}</a>'
         nav_html += '</div>'
         st.markdown(nav_html, unsafe_allow_html=True)
 
