@@ -306,30 +306,9 @@ with tab_ai:
     else:
         st.warning("Not enough data to run technical algorithms (need at least 50 days).")
         
-    col_about, col_news = st.columns([1, 1])
-    with col_about:
-        st.markdown("### About Company")
-        summary = stock_info.get('longBusinessSummary', 'Business summary not available for this ticker.')
-        st.write(summary)
-        
-    with col_news:
-        st.markdown("### Real-Time News")
-        try:
-            import yfinance as yf
-            news = yf.Ticker(ticker).news
-            if news:
-                for item in news[:5]:
-                    if 'content' in item: # handles new yfinance news format
-                        content = item['content']
-                        st.markdown(f"**[{content.get('title', 'News')}]({content.get('clickThroughUrl', {}).get('url', '#')})**")
-                        st.caption(f"{content.get('provider', {}).get('displayName', 'News')} • {content.get('pubDate', '')[:10]}")
-                    else:
-                        st.markdown(f"**[{item.get('title', 'News')}]({item.get('link', '#')})**")
-                        st.caption(f"{item.get('publisher', 'News')} • {datetime.fromtimestamp(item.get('providerPublishTime', 0)).strftime('%Y-%m-%d') if item.get('providerPublishTime') else ''}")
-            else:
-                st.info("No recent news found.")
-        except Exception as e:
-            st.error("Failed to load news.")
+    st.markdown("### About Company")
+    summary = stock_info.get('longBusinessSummary', 'Business summary not available for this ticker.')
+    st.write(summary)
 
 # ── Tab 3: Returns Analysis ─────────────────────────────────────────────────
 with tab_returns:
