@@ -157,7 +157,7 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
             st.rerun()
 
         st.markdown("---")
-        st.markdown(f"### {_('home')}")
+        st.markdown(f"### Main Menu")
 
         # Custom SVG Sidebar Navigation
         nav_items = [
