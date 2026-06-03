@@ -1,4 +1,7 @@
 import streamlit as st
+import importlib
+import config.settings
+importlib.reload(config.settings)
 from config.settings import *
 from utils.helpers import *
 from utils.translations import _
