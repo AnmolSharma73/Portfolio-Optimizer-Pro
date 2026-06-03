@@ -190,5 +190,5 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         from datetime import datetime
         now = datetime.now()
         is_open = (now.weekday() < 5) and (9 <= now.hour < 16)
-        dot, label = ("🟢", "Market Open") if is_open else ("🔴", "Market Closed")
-        st.caption(f"{dot} {label}")
+        dot, label = ("Open", "Market is Open") if is_open else ("Closed", "Market is Closed")
+        st.caption(f"Status: {label}")
