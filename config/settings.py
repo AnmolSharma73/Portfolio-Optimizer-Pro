@@ -15,88 +15,69 @@ __all__ = [
     "COLOR_PALETTE", "GRADIENT_COLORS", "SECTOR_COLORS", "OPTIMIZATION_METHODS"
 ]
 
-# ── Global Stock Universe (Categorized) ───────────────────────────────────────
+# ── Global Stock Universe (Categorized by Country) ───────────────────────────
 CATEGORIZED_TICKERS: Dict[str, Dict[str, str]] = {
-    "Technology & IT": {
+    "United States": {
         "AAPL": "Apple Inc.",
         "MSFT": "Microsoft",
         "NVDA": "NVIDIA",
-        "TCS.NS": "Tata Consultancy",
-        "INFY": "Infosys",
-        "TCEHY": "Tencent",
-        "BABA": "Alibaba",
-        "ASML.AS": "ASML Holding",
-        "SAP": "SAP SE",
-        "005930.KS": "Samsung Electronics",
-        "6758.T": "Sony Group",
         "GOOGL": "Alphabet",
-        "META": "Meta Platforms"
-    },
-    "Fintech & Finance": {
+        "META": "Meta Platforms",
         "JPM": "JPMorgan Chase",
         "V": "Visa",
         "MA": "Mastercard",
         "PYPL": "PayPal",
-        "SQ": "Block (Square)",
-        "HDFCBANK.NS": "HDFC Bank",
-        "IBN": "ICICI Bank",
-        "HSBC": "HSBC Holdings",
-        "AXP": "American Express",
-        "GS": "Goldman Sachs"
-    },
-    "Defence & Aerospace": {
         "LMT": "Lockheed Martin",
-        "RTX": "RTX Corp",
-        "NOC": "Northrop Grumman",
-        "GD": "General Dynamics",
-        "BA": "Boeing",
-        "THALES.PA": "Thales Group",
-        "BA.L": "BAE Systems",
-        "AIR.PA": "Airbus SE",
-        "HAL.NS": "Hindustan Aeronautics",
-        "BEL.NS": "Bharat Electronics"
-    },
-    "Healthcare & Biotech": {
         "JNJ": "Johnson & Johnson",
         "UNH": "UnitedHealth",
-        "LLY": "Eli Lilly",
-        "NVO": "Novo Nordisk",
-        "PFE": "Pfizer",
-        "AZN": "AstraZeneca",
-        "SUNPHARMA.NS": "Sun Pharma",
-        "MRK": "Merck & Co"
-    },
-    "Automotive & Transport": {
         "TSLA": "Tesla",
-        "7203.T": "Toyota Motor",
-        "TM": "Toyota (US ADR)",
-        "F": "Ford Motor",
-        "GM": "General Motors",
-        "RACE": "Ferrari",
-        "MARUTI.NS": "Maruti Suzuki",
-        "TATAMOTORS.NS": "Tata Motors",
-        "VOW3.DE": "Volkswagen"
-    },
-    "Energy & Materials": {
-        "XOM": "ExxonMobil",
-        "CVX": "Chevron",
-        "SHEL": "Shell plc",
-        "RELIANCE.NS": "Reliance Industries",
-        "BHP": "BHP Group",
-        "RIO": "Rio Tinto",
-        "TTE": "TotalEnergies",
-        "BP": "BP plc"
-    },
-    "Consumer & Retail": {
         "AMZN": "Amazon",
         "WMT": "Walmart",
+        "XOM": "ExxonMobil"
+    },
+    "India": {
+        "RELIANCE.NS": "Reliance Industries",
+        "TCS.NS": "Tata Consultancy",
+        "INFY": "Infosys",
+        "HDFCBANK.NS": "HDFC Bank",
+        "IBN": "ICICI Bank",
+        "HAL.NS": "Hindustan Aeronautics",
+        "BEL.NS": "Bharat Electronics",
+        "SUNPHARMA.NS": "Sun Pharma",
+        "MARUTI.NS": "Maruti Suzuki",
+        "TATAMOTORS.NS": "Tata Motors",
+        "ITC.NS": "ITC Limited"
+    },
+    "China": {
+        "TCEHY": "Tencent",
+        "BABA": "Alibaba",
+        "PDD": "PDD Holdings",
+        "JD": "JD.com",
+        "BIDU": "Baidu"
+    },
+    "Europe": {
+        "ASML.AS": "ASML Holding",
+        "SAP": "SAP SE",
         "LVMUY": "LVMH Moët Hennessy",
-        "PG": "Procter & Gamble",
-        "KO": "Coca-Cola",
-        "PEP": "PepsiCo",
-        "NKE": "Nike",
-        "ITC.NS": "ITC Limited",
-        "HUN": "Unilever"
+        "NVO": "Novo Nordisk",
+        "AZN": "AstraZeneca",
+        "THALES.PA": "Thales Group",
+        "AIR.PA": "Airbus SE",
+        "VOW3.DE": "Volkswagen",
+        "SHEL": "Shell plc"
+    },
+    "Japan": {
+        "7203.T": "Toyota Motor",
+        "6758.T": "Sony Group",
+        "8306.T": "Mitsubishi UFJ",
+        "9984.T": "SoftBank Group",
+        "6861.T": "Keyence"
+    },
+    "South Korea": {
+        "005930.KS": "Samsung Electronics",
+        "000660.KS": "SK Hynix",
+        "005380.KS": "Hyundai Motor",
+        "035420.KS": "NAVER"
     }
 }
 

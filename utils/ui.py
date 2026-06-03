@@ -159,25 +159,32 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         st.markdown("---")
         st.markdown(f"### {_('home')}")
 
-        # Page routing
-        # For label, we DO NOT include the emoji! Streamlit st.page_link automatically 
-        # extracts emojis from filenames, so including them in the label creates duplicates!
-        nav = [
-            ("🏠", _("home"), "app.py"),
-            ("📈", _("stock_analysis"), "pages/1_📈_Stock_Analysis.py"),
-            ("🎯", _("portfolio_builder"), "pages/2_🎯_Portfolio_Builder.py"),
-            ("📊", _("efficient_frontier"), "pages/3_📊_Efficient_Frontier.py"),
-            ("🎲", _("monte_carlo"), "pages/4_🎲_Monte_Carlo.py"),
-            ("⚖️", _("risk_analysis"), "pages/5_⚖️_Risk_Analysis.py"),
+        # Custom SVG Sidebar Navigation
+        nav_items = [
+            ("app", _("home"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'),
+            ("stock-analysis", _("stock_analysis"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>'),
+            ("portfolio-builder", _("portfolio_builder"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00D2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'),
+            ("efficient-frontier", _("efficient_frontier"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>'),
+            ("monte-carlo", _("monte_carlo"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>'),
+            ("risk-analysis", _("risk_analysis"), '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E396" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>')
         ]
-        
-        for icon, name, path in nav:
-            # We use the icon parameter directly to avoid double rendering
-            try:
-                st.page_link(path, label=name, icon=icon, use_container_width=True)
-            except Exception:
-                # Fallback for Streamlit versions < 1.31 which don't support icon parameter well
-                st.page_link(path, label=name, use_container_width=True)
+
+        nav_html = '<div style="display: flex; flex-direction: column; gap: 0.6rem; padding-top: 0.5rem;">'
+        for path, name, svg in nav_items:
+            # Check if this is the active page to highlight it
+            # Since we can't cleanly check URL in Streamlit without reruns, we'll style active on hover
+            nav_html += f'''
+            <a href="{path}" target="_self" style="
+                display: flex; align-items: center; padding: 0.7rem 1rem;
+                background: {t_card}; border: 1px solid {t_border};
+                border-radius: 8px; color: {t_fg}; text-decoration: none;
+                font-weight: 500; font-size: 0.95rem; transition: all 0.2s ease;">
+                <div style="margin-right: 12px; display: flex; align-items: center;">{svg}</div>
+                {name}
+            </a>
+            '''
+        nav_html += '</div>'
+        st.markdown(nav_html, unsafe_allow_html=True)
 
         st.markdown("---")
         from datetime import datetime

@@ -85,7 +85,7 @@ st.sidebar.markdown(f"## {_('stock_analysis')}")
 st.sidebar.markdown("---")
 
 category_options = list(CATEGORIZED_TICKERS.keys())
-selected_category = st.sidebar.selectbox("📂 Select Sector", category_options, index=0)
+selected_category = st.sidebar.selectbox("🌍 Select Country", category_options, index=0)
 
 category_stocks = CATEGORIZED_TICKERS[selected_category]
 ticker = st.sidebar.selectbox(
@@ -190,7 +190,7 @@ for col, (label, value) in zip([col1, col2, col3, col4, col5, col6], stats.items
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
-tab_price, tab_returns, tab_compare = st.tabs(["📊 Price Chart", "📈 Returns Analysis", "🔄 Comparison"])
+tab_price, tab_ai, tab_returns, tab_compare = st.tabs(["📊 Price Chart", "🤖 AI & News", "📈 Returns Analysis", "🔄 Comparison"])
 
 # ── Tab 1: Price Chart ───────────────────────────────────────────────────────
 with tab_price:
@@ -261,7 +261,77 @@ with tab_price:
 
     st.plotly_chart(apply_dynamic_theme(fig), use_container_width=True)
 
-# ── Tab 2: Returns Analysis ─────────────────────────────────────────────────
+# ── Tab 2: AI & News ─────────────────────────────────────────────────────────
+with tab_ai:
+    st.markdown("### 🧠 AI Technical Recommendation")
+    # Calculate indicators
+    close = stock_data['Close']
+    if len(close) > 50:
+        sma20 = close.rolling(20).mean().iloc[-1]
+        sma50 = close.rolling(50).mean().iloc[-1]
+        
+        # RSI
+        delta = close.diff()
+        gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+        rs = gain / loss
+        rsi = 100 - (100 / (1 + rs))
+        current_rsi = rsi.iloc[-1]
+        
+        signal = "HOLD"
+        color = "#8892A0"
+        if current_rsi > 70:
+            signal = "SELL (Overbought)"
+            color = "#FF4560"
+        elif current_rsi < 30:
+            signal = "STRONG BUY (Oversold)"
+            color = "#00E396"
+        elif sma20 > sma50 and current_rsi < 60:
+            signal = "BUY (Upward Trend)"
+            color = "#00E396"
+        elif sma20 < sma50:
+            signal = "SELL (Downward Trend)"
+            color = "#FF4560"
+            
+        st.markdown(f"""
+        <div style="background: rgba(26,31,46,0.8); border-left: 4px solid {color}; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h4 style="margin-top:0; color: #E0E0E0;">Algorithmic Signal: <span style="color: {color};">{signal}</span></h4>
+            <p style="color: #8892A0; margin-bottom: 0;">
+                <b>RSI (14):</b> {current_rsi:.1f} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                <b>SMA 20:</b> {format_currency(sma20, curr_sym)} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                <b>SMA 50:</b> {format_currency(sma50, curr_sym)}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.warning("Not enough data to run technical algorithms (need at least 50 days).")
+        
+    col_about, col_news = st.columns([1, 1])
+    with col_about:
+        st.markdown("### 🏢 About Company")
+        summary = stock_info.get('longBusinessSummary', 'Business summary not available for this ticker.')
+        st.write(summary)
+        
+    with col_news:
+        st.markdown("### 📰 Real-Time News")
+        try:
+            import yfinance as yf
+            news = yf.Ticker(ticker).news
+            if news:
+                for item in news[:5]:
+                    if 'content' in item: # handles new yfinance news format
+                        content = item['content']
+                        st.markdown(f"**[{content.get('title', 'News')}]({content.get('clickThroughUrl', {}).get('url', '#')})**")
+                        st.caption(f"{content.get('provider', {}).get('displayName', 'News')} • {content.get('pubDate', '')[:10]}")
+                    else:
+                        st.markdown(f"**[{item.get('title', 'News')}]({item.get('link', '#')})**")
+                        st.caption(f"{item.get('publisher', 'News')} • {datetime.fromtimestamp(item.get('providerPublishTime', 0)).strftime('%Y-%m-%d') if item.get('providerPublishTime') else ''}")
+            else:
+                st.info("No recent news found.")
+        except Exception as e:
+            st.error("Failed to load news.")
+
+# ── Tab 3: Returns Analysis ─────────────────────────────────────────────────
 with tab_returns:
     returns = DataProcessor.calculate_returns(stock_data[['Close']])
 

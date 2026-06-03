@@ -17,7 +17,7 @@ from optimization.markowitz import MarkowitzOptimizer
 from risk.metrics import RiskMetrics
 from visualization.charts import plot_portfolio_allocation, plot_correlation_heatmap, plot_risk_return_scatter
 from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
-from config.settings import DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS, OPTIMIZATION_METHODS, COLOR_PALETTE
+from config.settings import CATEGORIZED_TICKERS, RISK_FREE_RATE, TRADING_DAYS, OPTIMIZATION_METHODS, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, init_session_state
 from utils.translations import _
 from utils.ui import setup_page
@@ -49,12 +49,33 @@ st.markdown("""
 st.sidebar.markdown(f"## {_('portfolio_builder')}")
 st.sidebar.markdown("---")
 
+all_flattened_tickers = {k: v for d in CATEGORIZED_TICKERS.values() for k, v in d.items()}
+
+if st.sidebar.button("🌟 Auto-Suggest High Growth", help="Automatically selects 5 globally top-performing stocks."):
+    st.session_state['selected_tickers'] = ["NVDA", "META", "ASML.AS", "TCEHY", "RELIANCE.NS"]
+    
+category_options = ["All Countries"] + list(CATEGORIZED_TICKERS.keys())
+selected_category = st.sidebar.selectbox("🌍 Filter by Country", category_options, index=0)
+
+if selected_category == "All Countries":
+    available_tickers = all_flattened_tickers
+else:
+    available_tickers = CATEGORIZED_TICKERS[selected_category]
+
+# Safe default to avoid KeyError if the session state tickers aren't in the newly selected category
+default_ticks = st.session_state.get('selected_tickers', ["AAPL", "MSFT", "NVDA", "JPM", "V"])
+valid_defaults = [t for t in default_ticks if t in available_tickers]
+if len(valid_defaults) < 2:
+    valid_defaults = list(available_tickers.keys())[:5]
+
 selected_tickers = st.sidebar.multiselect(
     "📊 Select Stocks",
-    options=DEFAULT_TICKERS,
-    default=["AAPL", "MSFT", "NVDA", "JPM", "V"],
+    options=list(available_tickers.keys()),
+    default=valid_defaults,
+    format_func=lambda x: f"{x} - {available_tickers[x]}",
     help="Select 2 or more stocks for your portfolio"
 )
+st.session_state['selected_tickers'] = selected_tickers
 
 investment_amount = st.sidebar.number_input(
     "💰 Investment Amount ($)",
