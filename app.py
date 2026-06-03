@@ -8,7 +8,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
-setup_page(page_title=APP_NAME, page_icon="📊", layout="wide")
+setup_page(page_title=APP_NAME, page_icon="bar-chart", layout="wide")
 init_session_state()
 
 # ─── Main Content ─────────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ if st.session_state.get("portfolio_weights") and st.session_state.get("optimizat
     results = st.session_state["optimization_result"]
     inv = st.session_state.get("investment_amount", 100000)
     fx = st.session_state.get("fx_rate", 1.0)
-    curr_sym = current_curr.split(" ")[1].strip("()")
+    curr_sym = st.session_state.get("currency", "USD")
 
     st.markdown("### Your Portfolio")
     c1, c2, c3, c4 = st.columns(4)

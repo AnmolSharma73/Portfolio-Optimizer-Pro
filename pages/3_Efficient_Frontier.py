@@ -236,10 +236,9 @@ with st.sidebar:
 # Page header
 # ═══════════════════════════════════════════════════════════════════════════════
 
-st.markdown(
-    f'<h1 class="header-gradient">{_("efficient_frontier")}</h1>',
-    unsafe_allow_html=True,
-)
+st.markdown(f"# {_('efficient_frontier')}")
+st.markdown("*Visualize the risk-return frontier and find the optimal portfolio allocation*")
+st.markdown("---")
 st.markdown(
     """
     <div class="info-box">
@@ -361,7 +360,7 @@ if generate_btn:
                 symbol="star",
                 line=dict(width=2, color="#0E1117"),
             ),
-            text=["★ Max Sharpe"],
+            text=["Max Sharpe"],
             textposition="top right",
             textfont=dict(color="#FFD700", size=12, family="Inter"),
             hovertemplate=(
@@ -387,7 +386,7 @@ if generate_btn:
                 symbol="diamond",
                 line=dict(width=2, color="#0E1117"),
             ),
-            text=["◆ Min Vol"],
+            text=["Min Vol"],
             textposition="bottom right",
             textfont=dict(color="#00E396", size=12, family="Inter"),
             hovertemplate=(
@@ -485,7 +484,7 @@ if generate_btn:
     # ── Tab 1: Max Sharpe ─────────────────────────────────────────────────
     with tab_sharpe:
         st.markdown(
-            '<span class="portfolio-badge badge-sharpe">★ MAXIMUM SHARPE RATIO</span>',
+            '<span class="portfolio-badge badge-sharpe">MAXIMUM SHARPE RATIO</span>',
             unsafe_allow_html=True,
         )
         st.markdown("")
@@ -510,7 +509,7 @@ if generate_btn:
     # ── Tab 2: Min Volatility ─────────────────────────────────────────────
     with tab_minvol:
         st.markdown(
-            '<span class="portfolio-badge badge-minvol">◆ MINIMUM VOLATILITY</span>',
+            '<span class="portfolio-badge badge-minvol">MINIMUM VOLATILITY</span>',
             unsafe_allow_html=True,
         )
         st.markdown("")
