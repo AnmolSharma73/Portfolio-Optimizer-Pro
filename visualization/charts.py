@@ -930,6 +930,13 @@ def plot_future_simulation(
     """
     fig = go.Figure()
 
+    import numpy as np
+    import pandas as pd
+    if isinstance(simulation_paths, np.ndarray):
+        # The simulator returns an array of shape (num_paths, days).
+        # We need a DataFrame where each column is a path.
+        simulation_paths = pd.DataFrame(simulation_paths).T
+
     # Individual paths (low opacity)
     max_paths_to_draw = min(simulation_paths.shape[1], 200)
     sample_cols = simulation_paths.columns[:max_paths_to_draw]

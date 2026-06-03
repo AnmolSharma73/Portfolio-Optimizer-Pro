@@ -42,8 +42,8 @@ st.markdown(
     <style>
     /* Card container styling */
     .frontier-card {
-        background: linear-gradient(145deg, #1A1F2E 0%, #141820 100%);
-        border: 1px solid #252B3B;
+        background: var(--theme-card);
+        border: 1px solid var(--theme-border);
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 16px;
@@ -74,12 +74,12 @@ st.markdown(
         border: 1px solid rgba(0, 227, 150, 0.3);
     }
     .info-box {
-        background: linear-gradient(145deg, #1A1F2E 0%, #141820 100%);
+        background: var(--theme-card);
         border-left: 4px solid #6C63FF;
         border-radius: 0 12px 12px 0;
         padding: 20px 24px;
         margin: 16px 0;
-        color: #B0B8C8;
+        color: var(--theme-muted);
         line-height: 1.7;
     }
     .header-gradient {
@@ -88,29 +88,6 @@ st.markdown(
         -webkit-text-fill-color: transparent;
         background-clip: text;
         font-weight: 800;
-    }
-    div[data-testid="stMetric"] {
-        background-color: #1A1F2E;
-        border: 1px solid #252B3B;
-        border-radius: 12px;
-        padding: 16px 20px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.20);
-        border-color: #6C63FF;
-    }
-    div[data-testid="stMetric"] label {
-        color: #8892A0 !important;
-        font-size: 0.85rem !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: #E0E0E0 !important;
-        font-weight: 700 !important;
     }
     </style>
     """,
@@ -122,30 +99,7 @@ st.markdown(
 # Helper — chart layout base
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _chart_layout(title: str = "", height: int = 600) -> dict:
-    """Return a standardised Plotly layout dict."""
-    return dict(
-        title=dict(text=title, font=dict(size=20, color="#E0E0E0")),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, sans-serif", color="#B0B8C8"),
-        height=height,
-        margin=dict(l=60, r=40, t=60, b=60),
-        legend=dict(
-            bgcolor="rgba(26,31,46,0.85)",
-            bordercolor="#252B3B",
-            borderwidth=1,
-            font=dict(color="#E0E0E0"),
-        ),
-        xaxis=dict(
-            gridcolor="rgba(255,255,255,0.06)",
-            zerolinecolor="rgba(255,255,255,0.1)",
-        ),
-        yaxis=dict(
-            gridcolor="rgba(255,255,255,0.06)",
-            zerolinecolor="rgba(255,255,255,0.1)",
-        ),
-    )
+from visualization.styles import get_chart_layout
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -167,21 +121,21 @@ def _weights_donut(weights: dict, title: str = "Portfolio Allocation") -> go.Fig
                 labels=labels,
                 values=values,
                 hole=0.55,
-                marker=dict(colors=colors, line=dict(color="#0E1117", width=2)),
+                marker=dict(colors=colors, line=dict(color="rgba(0,0,0,0.1)", width=1)),
                 textinfo="label+percent",
-                textfont=dict(size=12, color="#E0E0E0"),
+                textfont=dict(size=12),
                 hovertemplate="<b>%{label}</b><br>Weight: %{percent}<extra></extra>",
             )
         ]
     )
     fig.update_layout(
-        **_chart_layout(title, height=380),
+        **get_chart_layout(title, height=380),
         showlegend=False,
         annotations=[
             dict(
                 text="<b>Weights</b>",
                 x=0.5, y=0.5,
-                font=dict(size=14, color="#8892A0"),
+                font=dict(size=14),
                 showarrow=False,
             )
         ],
@@ -328,10 +282,8 @@ if generate_btn:
                 color=frontier_data["sharpe_ratios"],
                 colorscale=[[0, "#FF4560"], [0.5, "#FEB019"], [1, "#00E396"]],
                 colorbar=dict(
-                    title=dict(text="Sharpe", font=dict(color="#B0B8C8")),
-                    tickfont=dict(color="#B0B8C8"),
-                    bgcolor="rgba(26,31,46,0.9)",
-                    bordercolor="#252B3B",
+                    title=dict(text="Sharpe"),
+                    len=0.5,
                     len=0.5,
                     x=1.02,
                 ),
@@ -463,7 +415,7 @@ if generate_btn:
 
     # -- Layout -----
     fig.update_layout(
-        **_chart_layout("", height=620),
+        **get_chart_layout("", height=620),
         hovermode="closest",
     )
     fig.update_xaxes(title_text="Annualized Volatility (σ)", tickformat=".0%",
@@ -554,11 +506,7 @@ if generate_btn:
 
         comparison_df = pd.DataFrame(comparison_rows)
         st.dataframe(
-            comparison_df.style.set_properties(**{
-                "background-color": "#1A1F2E",
-                "color": "#E0E0E0",
-                "border-color": "#252B3B",
-            }),
+            comparison_df,
             use_container_width=True,
             hide_index=True,
             key="comparison_table",
@@ -582,11 +530,7 @@ if generate_btn:
             }
         )
         st.dataframe(
-            summary_df.style.set_properties(**{
-                "background-color": "#1A1F2E",
-                "color": "#E0E0E0",
-                "border-color": "#252B3B",
-            }),
+            summary_df,
             use_container_width=True,
             hide_index=True,
             key="summary_table",
@@ -637,10 +581,10 @@ else:
             """
             <div style="text-align: center; padding: 80px 20px;">
                 <div style="font-size: 4rem; margin-bottom: 16px;"></div>
-                <h3 style="color: #E0E0E0; margin-bottom: 8px;">
+                <h3 style="color: var(--theme-fg); margin-bottom: 8px;">
                     Ready to Explore the Frontier
                 </h3>
-                <p style="color: #8892A0; max-width: 440px; margin: 0 auto;">
+                <p style="color: var(--theme-muted); max-width: 440px; margin: 0 auto;">
                     Select your assets and historical period in the sidebar,
                     then click <strong>Generate Frontier</strong> to visualise
                     the optimal risk–return trade-off.

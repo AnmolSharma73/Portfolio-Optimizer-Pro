@@ -279,7 +279,7 @@ with tab_ai:
         current_rsi = rsi.iloc[-1]
         
         signal = "HOLD"
-        color = "#8892A0"
+        color = "var(--theme-muted)"
         if current_rsi > 70:
             signal = "SELL (Overbought)"
             color = "#FF4560"
@@ -294,9 +294,9 @@ with tab_ai:
             color = "#FF4560"
             
         st.markdown(f"""
-        <div style="background: rgba(26,31,46,0.8); border-left: 4px solid {color}; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-            <h4 style="margin-top:0; color: #E0E0E0;">Algorithmic Signal: <span style="color: {color};">{signal}</span></h4>
-            <p style="color: #8892A0; margin-bottom: 0;">
+        <div style="background: var(--theme-card); border-left: 4px solid {color}; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-top: 1px solid var(--theme-border); border-right: 1px solid var(--theme-border); border-bottom: 1px solid var(--theme-border);">
+            <h4 style="margin-top:0; color: var(--theme-fg);">Algorithmic Signal: <span style="color: {color};">{signal}</span></h4>
+            <p style="color: var(--theme-muted); margin-bottom: 0;">
                 <b>RSI (14):</b> {current_rsi:.1f} &nbsp;&nbsp;|&nbsp;&nbsp; 
                 <b>SMA 20:</b> {format_currency(sma20, curr_sym)} &nbsp;&nbsp;|&nbsp;&nbsp; 
                 <b>SMA 50:</b> {format_currency(sma50, curr_sym)}
