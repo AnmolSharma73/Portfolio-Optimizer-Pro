@@ -23,9 +23,10 @@ from config.settings import (DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS,
                               COLOR_PALETTE, DEFAULT_BENCHMARK, DEFAULT_PERIOD)
 from utils.helpers import format_currency, format_percentage, init_session_state
 from utils.translations import _
+from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Risk Analysis", page_icon="⚖️", layout="wide")
+setup_page(page_title="Risk Analysis", page_icon="⚖️", layout="wide")
 init_session_state()
 
 st.markdown("""

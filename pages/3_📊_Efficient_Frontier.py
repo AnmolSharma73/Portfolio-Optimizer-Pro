@@ -31,13 +31,10 @@ from config.settings import (
 from utils.helpers import format_percentage, format_currency, create_metric_card
 from visualization.styles import apply_dynamic_theme
 from utils.translations import _
+from utils.ui import setup_page
 
 # ── Page configuration ────────────────────────────────────────────────────────
-st.set_page_config(
-    page_title=f"Efficient Frontier - {APP_NAME}",
-    page_icon="📊",
-    layout="wide",
-)
+setup_page(page_title=f"Efficient Frontier - {APP_NAME}", page_icon="📊", layout="wide")
 
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown(

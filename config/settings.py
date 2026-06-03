@@ -8,21 +8,102 @@ from typing import Dict, List
 APP_NAME: str = "Portfolio Optimizer Pro"
 APP_VERSION: str = "1.0.0"
 
-# ── Default Portfolio Configuration ───────────────────────────────────────────
-DEFAULT_TICKERS: List[str] = [
-    # US
-    "AAPL", "MSFT", "NVDA",
-    # India
-    "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS",
-    # China
-    "TCEHY", "BABA",
-    # Europe
-    "ASML.AS", "LVMUY", "SAP",
-    # Japan
-    "7203.T", "6758.T", # Toyota, Sony
-    # South Korea
-    "005930.KS", # Samsung
+__all__ = [
+    "APP_NAME", "APP_VERSION", "CATEGORIZED_TICKERS", "DEFAULT_TICKERS",
+    "SUPPORTED_CURRENCIES", "SUPPORTED_LANGUAGES", "RISK_FREE_RATE",
+    "TRADING_DAYS", "DEFAULT_PERIOD", "DEFAULT_BENCHMARK",
+    "COLOR_PALETTE", "GRADIENT_COLORS", "SECTOR_COLORS", "OPTIMIZATION_METHODS"
 ]
+
+# ── Global Stock Universe (Categorized) ───────────────────────────────────────
+CATEGORIZED_TICKERS: Dict[str, Dict[str, str]] = {
+    "Technology & IT": {
+        "AAPL": "Apple Inc.",
+        "MSFT": "Microsoft",
+        "NVDA": "NVIDIA",
+        "TCS.NS": "Tata Consultancy",
+        "INFY": "Infosys",
+        "TCEHY": "Tencent",
+        "BABA": "Alibaba",
+        "ASML.AS": "ASML Holding",
+        "SAP": "SAP SE",
+        "005930.KS": "Samsung Electronics",
+        "6758.T": "Sony Group",
+        "GOOGL": "Alphabet",
+        "META": "Meta Platforms"
+    },
+    "Fintech & Finance": {
+        "JPM": "JPMorgan Chase",
+        "V": "Visa",
+        "MA": "Mastercard",
+        "PYPL": "PayPal",
+        "SQ": "Block (Square)",
+        "HDFCBANK.NS": "HDFC Bank",
+        "IBN": "ICICI Bank",
+        "HSBC": "HSBC Holdings",
+        "AXP": "American Express",
+        "GS": "Goldman Sachs"
+    },
+    "Defence & Aerospace": {
+        "LMT": "Lockheed Martin",
+        "RTX": "RTX Corp",
+        "NOC": "Northrop Grumman",
+        "GD": "General Dynamics",
+        "BA": "Boeing",
+        "THALES.PA": "Thales Group",
+        "BA.L": "BAE Systems",
+        "AIR.PA": "Airbus SE",
+        "HAL.NS": "Hindustan Aeronautics",
+        "BEL.NS": "Bharat Electronics"
+    },
+    "Healthcare & Biotech": {
+        "JNJ": "Johnson & Johnson",
+        "UNH": "UnitedHealth",
+        "LLY": "Eli Lilly",
+        "NVO": "Novo Nordisk",
+        "PFE": "Pfizer",
+        "AZN": "AstraZeneca",
+        "SUNPHARMA.NS": "Sun Pharma",
+        "MRK": "Merck & Co"
+    },
+    "Automotive & Transport": {
+        "TSLA": "Tesla",
+        "7203.T": "Toyota Motor",
+        "TM": "Toyota (US ADR)",
+        "F": "Ford Motor",
+        "GM": "General Motors",
+        "RACE": "Ferrari",
+        "MARUTI.NS": "Maruti Suzuki",
+        "TATAMOTORS.NS": "Tata Motors",
+        "VOW3.DE": "Volkswagen"
+    },
+    "Energy & Materials": {
+        "XOM": "ExxonMobil",
+        "CVX": "Chevron",
+        "SHEL": "Shell plc",
+        "RELIANCE.NS": "Reliance Industries",
+        "BHP": "BHP Group",
+        "RIO": "Rio Tinto",
+        "TTE": "TotalEnergies",
+        "BP": "BP plc"
+    },
+    "Consumer & Retail": {
+        "AMZN": "Amazon",
+        "WMT": "Walmart",
+        "LVMUY": "LVMH Moët Hennessy",
+        "PG": "Procter & Gamble",
+        "KO": "Coca-Cola",
+        "PEP": "PepsiCo",
+        "NKE": "Nike",
+        "ITC.NS": "ITC Limited",
+        "HUN": "Unilever"
+    }
+}
+
+# Flatten list of default tickers for fallback use cases
+DEFAULT_TICKERS: List[str] = []
+for _cat, _stocks in CATEGORIZED_TICKERS.items():
+    DEFAULT_TICKERS.extend(_stocks.keys())
 
 # ── Supported Currencies ──────────────────────────────────────────────────────
 SUPPORTED_CURRENCIES: Dict[str, str] = {

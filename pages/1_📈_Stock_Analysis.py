@@ -19,12 +19,13 @@ from data.processor import DataProcessor
 from risk.metrics import RiskMetrics
 from visualization.charts import plot_stock_price, plot_correlation_heatmap, plot_risk_return_scatter
 from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
-from config.settings import DEFAULT_TICKERS, DEFAULT_PERIOD, TRADING_DAYS, RISK_FREE_RATE, COLOR_PALETTE
+from config.settings import CATEGORIZED_TICKERS, DEFAULT_PERIOD, TRADING_DAYS, RISK_FREE_RATE, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, format_large_number
 from utils.translations import _
+from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Stock Analysis", page_icon="📈", layout="wide")
+setup_page(page_title="Stock Analysis", page_icon="📈", layout="wide")
 
 # ── Custom CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -83,9 +84,14 @@ st.markdown("""
 st.sidebar.markdown(f"## {_('stock_analysis')}")
 st.sidebar.markdown("---")
 
-ticker = st.sidebar.text_input(
+category_options = list(CATEGORIZED_TICKERS.keys())
+selected_category = st.sidebar.selectbox("📂 Select Sector", category_options, index=0)
+
+category_stocks = CATEGORIZED_TICKERS[selected_category]
+ticker = st.sidebar.selectbox(
     f"🔍 {_('select_ticker')}",
-    value="AAPL",
+    options=list(category_stocks.keys()),
+    format_func=lambda x: f"{x} - {category_stocks[x]}"
 ).upper().strip()
 
 period_options = {"1 Month": "1mo", "3 Months": "3mo", "6 Months": "6mo",
@@ -95,9 +101,12 @@ period = period_options[selected_period]
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📊 Compare Stocks")
+
+all_flattened_tickers = {k: v for d in CATEGORIZED_TICKERS.values() for k, v in d.items()}
 compare_tickers = st.sidebar.multiselect(
     "Add tickers to compare",
-    options=[t for t in DEFAULT_TICKERS if t != ticker],
+    options=[t for t in all_flattened_tickers.keys() if t != ticker],
+    format_func=lambda x: f"{x} - {all_flattened_tickers[x]}",
     default=[]
 )
 

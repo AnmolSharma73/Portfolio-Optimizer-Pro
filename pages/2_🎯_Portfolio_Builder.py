@@ -20,9 +20,10 @@ from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS, OPTIMIZATION_METHODS, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, init_session_state
 from utils.translations import _
+from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Portfolio Builder", page_icon="🎯", layout="wide")
+setup_page(page_title="Portfolio Builder", page_icon="🎯", layout="wide")
 init_session_state()
 
 # ── Custom CSS ───────────────────────────────────────────────────────────────
@@ -50,8 +51,8 @@ st.sidebar.markdown("---")
 
 selected_tickers = st.sidebar.multiselect(
     "📊 Select Stocks",
-    options=DEFAULT_TICKERS + ['BRK-B', 'UNH', 'HD', 'PG', 'MA', 'DIS', 'NFLX', 'ADBE', 'CRM', 'INTC', 'AMD', 'PYPL'],
-    default=DEFAULT_TICKERS[:5],
+    options=DEFAULT_TICKERS,
+    default=["AAPL", "MSFT", "NVDA", "JPM", "V"],
     help="Select 2 or more stocks for your portfolio"
 )
 
