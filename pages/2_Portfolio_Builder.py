@@ -187,10 +187,10 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
     st.markdown("## Optimized Portfolio")
 
     mc1, mc2, mc3, mc4 = st.columns(4)
-    mc1.markdown(f"""<div class="result-card"><div class="result-label">{_('expected_return')}</div><div class="result-value">{{result['expected_return']:.2%}}</div></div>""", unsafe_allow_html=True)
-    mc2.markdown(f"""<div class="result-card"><div class="result-label">{_('volatility')}</div><div class="result-value">{{result['volatility']:.2%}}</div></div>""", unsafe_allow_html=True)
-    mc3.markdown(f"""<div class="result-card"><div class="result-label">{_('sharpe_ratio')}</div><div class="result-value">{{result['sharpe_ratio']:.3f}}</div></div>""", unsafe_allow_html=True)
-    mc4.markdown(f"""<div class="result-card"><div class="result-label">{_('investment_amount')}</div><div class="result-value">{{format_currency(investment_amount * fx, curr_sym)}}</div></div>""", unsafe_allow_html=True)
+    mc1.markdown(f"""<div class="result-card"><div class="result-label">{_('expected_return')}</div><div class="result-value">{result['expected_return']:.2%}</div></div>""", unsafe_allow_html=True)
+    mc2.markdown(f"""<div class="result-card"><div class="result-label">{_('volatility')}</div><div class="result-value">{result['volatility']:.2%}</div></div>""", unsafe_allow_html=True)
+    mc3.markdown(f"""<div class="result-card"><div class="result-label">{_('sharpe_ratio')}</div><div class="result-value">{result['sharpe_ratio']:.3f}</div></div>""", unsafe_allow_html=True)
+    mc4.markdown(f"""<div class="result-card"><div class="result-label">{_('investment_amount')}</div><div class="result-value">{format_currency(investment_amount * fx, curr_sym)}</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
