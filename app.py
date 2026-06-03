@@ -85,21 +85,36 @@ if st.session_state.get("portfolio_weights") and st.session_state.get("optimizat
 st.markdown("### 🧩 Tools")
 
 features = [
-    ("📈", _("stock_analysis"), "Research individual stocks with candlestick charts, technical indicators, and key financial statistics.", "pages/1_📈_Stock_Analysis.py"),
-    ("🎯", _("portfolio_builder"), "Select stocks and optimize using Max Sharpe, Min Volatility, or Equal Weight strategies.", "pages/2_🎯_Portfolio_Builder.py"),
-    ("📊", _("efficient_frontier"), "Visualize the risk-return frontier and find the optimal portfolio allocation.", "pages/3_📊_Efficient_Frontier.py"),
-    ("🎲", _("monte_carlo"), "Simulate thousands of random portfolios to explore the distribution of outcomes.", "pages/4_🎲_Monte_Carlo.py"),
-    ("⚖️", _("risk_analysis"), "Measure portfolio risk with Sharpe, Sortino, VaR, CVaR, drawdown, and 10+ metrics.", "pages/5_⚖️_Risk_Analysis.py"),
+    (
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+        _("stock_analysis"), "Research individual stocks with candlestick charts, technical indicators, and key financial statistics.", "pages/1_📈_Stock_Analysis.py"
+    ),
+    (
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00D2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+        _("portfolio_builder"), "Select stocks and optimize using Max Sharpe, Min Volatility, or Equal Weight strategies.", "pages/2_🎯_Portfolio_Builder.py"
+    ),
+    (
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',
+        _("efficient_frontier"), "Visualize the risk-return frontier and find the optimal portfolio allocation.", "pages/3_📊_Efficient_Frontier.py"
+    ),
+    (
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+        _("monte_carlo"), "Simulate thousands of random portfolios to explore the distribution of outcomes.", "pages/4_🎲_Monte_Carlo.py"
+    ),
+    (
+        '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00E396" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
+        _("risk_analysis"), "Measure portfolio risk with Sharpe, Sortino, VaR, CVaR, drawdown, and 10+ metrics.", "pages/5_⚖️_Risk_Analysis.py"
+    ),
 ]
 
 col1, col2 = st.columns(2)
-for i, (icon, title, desc, path) in enumerate(features):
+for i, (svg_icon, title, desc, path) in enumerate(features):
     c = col1 if i % 2 == 0 else col2
     with c:
         st.markdown(f"""
-        <div style="border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.3rem; margin-bottom: 0.5rem; height: 140px; text-align: left;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.3rem;">{icon}</div>
-            <div style="font-size: 1.1rem; font-weight: 700;">{title}</div>
+        <div style="border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.3rem; margin-bottom: 0.5rem; height: 160px; text-align: left; display: flex; flex-direction: column; justify-content: center;">
+            <div style="margin-bottom: 0.5rem;">{svg_icon}</div>
+            <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">{title}</div>
             <div style="font-size: 0.85rem; color: {COLOR_PALETTE['text_muted']}; line-height: 1.4;">{desc}</div>
         </div>
         """, unsafe_allow_html=True)

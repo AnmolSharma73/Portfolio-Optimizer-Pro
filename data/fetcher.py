@@ -57,9 +57,31 @@ def _fetch_multiple_stocks(tickers: tuple, period: str = "5y", interval: str = "
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _fetch_stock_info(ticker: str) -> dict:
-    """Return the yfinance .info dict for a ticker."""
+    """Return the yfinance .info dict, supplemented by .fast_info if missing."""
     try:
-        return yf.Ticker(ticker).info or {}
+        t = yf.Ticker(ticker)
+        info = t.info or {}
+        
+        # yfinance .info frequently drops important keys on weekends or for international stocks.
+        # .fast_info is much more reliable. We inject these into the dict if missing.
+        try:
+            fast = t.fast_info
+            if 'marketCap' not in info and 'market_cap' in fast:
+                info['marketCap'] = fast['market_cap']
+            if 'regularMarketPrice' not in info and 'last_price' in fast:
+                info['regularMarketPrice'] = fast['last_price']
+            if 'previousClose' not in info and 'previous_close' in fast:
+                info['previousClose'] = fast['previous_close']
+            if 'fiftyTwoWeekHigh' not in info and 'year_high' in fast:
+                info['fiftyTwoWeekHigh'] = fast['year_high']
+            if 'fiftyTwoWeekLow' not in info and 'year_low' in fast:
+                info['fiftyTwoWeekLow'] = fast['year_low']
+            if 'averageVolume' not in info and 'last_volume' in fast:
+                info['averageVolume'] = fast['last_volume']
+        except Exception:
+            pass
+            
+        return info
     except Exception:
         return {}
 

@@ -91,7 +91,7 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
     [data-testid="stPlotlyChart"] {{ border-radius: 12px; overflow: hidden; border: 1px solid {t_border}; background: {t_card} !important; }}
     
     .brand {{ text-align: center; padding: 0.8rem 0; margin-bottom: 0.5rem; border-bottom: 1px solid {t_border}; }}
-    .brand .b-icon {{ font-size: 2rem; display: block; margin-bottom: 0.2rem; }}
+    .brand .b-icon {{ display: flex; justify-content: center; margin-bottom: 0.4rem; }}
     .brand .b-name {{
         font-size: 1.15rem; font-weight: 800;
         background: linear-gradient(135deg, #667eea, #f093fb);
@@ -105,7 +105,17 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
     with st.sidebar:
         st.markdown(f"""
         <div class="brand">
-            <span class="b-icon">📊</span>
+            <div class="b-icon">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="url(#logo-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <defs>
+                    <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#667eea" />
+                      <stop offset="100%" stop-color="#f093fb" />
+                    </linearGradient>
+                  </defs>
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+            </div>
             <div class="b-name">{APP_NAME}</div>
             <div class="b-ver">v2.0 — PRO</div>
         </div>
@@ -150,6 +160,8 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         st.markdown(f"### {_('home')}")
 
         # Page routing
+        # For label, we DO NOT include the emoji! Streamlit st.page_link automatically 
+        # extracts emojis from filenames, so including them in the label creates duplicates!
         nav = [
             ("🏠", _("home"), "app.py"),
             ("📈", _("stock_analysis"), "pages/1_📈_Stock_Analysis.py"),
@@ -160,7 +172,12 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         ]
         
         for icon, name, path in nav:
-            st.page_link(path, label=f"{icon} {name}", use_container_width=True)
+            # We use the icon parameter directly to avoid double rendering
+            try:
+                st.page_link(path, label=name, icon=icon, use_container_width=True)
+            except Exception:
+                # Fallback for Streamlit versions < 1.31 which don't support icon parameter well
+                st.page_link(path, label=name, use_container_width=True)
 
         st.markdown("---")
         from datetime import datetime
