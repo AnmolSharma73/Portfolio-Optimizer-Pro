@@ -25,7 +25,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-setup_page(page_title="Stock Analysis", page_icon="📈", layout="wide")
+setup_page(page_title="Stock Analysis", page_icon="line-chart", layout="wide")
 
 # ── Custom CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -85,22 +85,22 @@ st.sidebar.markdown(f"## {_('stock_analysis')}")
 st.sidebar.markdown("---")
 
 category_options = list(CATEGORIZED_TICKERS.keys())
-selected_category = st.sidebar.selectbox("🌍 Select Country", category_options, index=0)
+selected_category = st.sidebar.selectbox("Select Country", category_options, index=0)
 
 category_stocks = CATEGORIZED_TICKERS[selected_category]
 ticker = st.sidebar.selectbox(
-    f"🔍 {_('select_ticker')}",
+    f"{_('select_ticker')}",
     options=list(category_stocks.keys()),
     format_func=lambda x: f"{x} - {category_stocks[x]}"
 ).upper().strip()
 
 period_options = {"1 Month": "1mo", "3 Months": "3mo", "6 Months": "6mo",
                   "1 Year": "1y", "2 Years": "2y", "5 Years": "5y", "Max": "max"}
-selected_period = st.sidebar.selectbox("📅 Time Period", list(period_options.keys()), index=4)
+selected_period = st.sidebar.selectbox("Time Period", list(period_options.keys()), index=4)
 period = period_options[selected_period]
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📊 Compare Stocks")
+st.sidebar.markdown("### Compare Stocks")
 
 all_flattened_tickers = {k: v for d in CATEGORIZED_TICKERS.values() for k, v in d.items()}
 compare_tickers = st.sidebar.multiselect(
@@ -111,9 +111,9 @@ compare_tickers = st.sidebar.multiselect(
 )
 
 st.sidebar.markdown("---")
-show_sma = st.sidebar.checkbox("📏 Show SMA (20, 50)", value=False)
-show_ema = st.sidebar.checkbox("📐 Show EMA (12, 26)", value=False)
-show_bollinger = st.sidebar.checkbox("📉 Bollinger Bands", value=False)
+show_sma = st.sidebar.checkbox("Show SMA (20, 50)", value=False)
+show_ema = st.sidebar.checkbox("Show EMA (12, 26)", value=False)
+show_bollinger = st.sidebar.checkbox("Bollinger Bands", value=False)
 
 # ── Main Content ─────────────────────────────────────────────────────────────
 fetcher = StockDataFetcher()
@@ -135,7 +135,7 @@ with st.spinner(f"Fetching data for {ticker}..."):
     stock_info = fetcher.get_stock_info(ticker)
 
 if stock_data.empty:
-    st.error(f"❌ Could not fetch data for **{ticker}**. Please check the ticker symbol.")
+    st.error(f"Could not fetch data for **{ticker}**. Please check the ticker symbol.")
     st.stop()
 
 # ── Stock Header ─────────────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ for col, (label, value) in zip([col1, col2, col3, col4, col5, col6], stats.items
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
-tab_price, tab_ai, tab_returns, tab_compare = st.tabs(["📊 Price Chart", "🤖 AI & News", "📈 Returns Analysis", "🔄 Comparison"])
+tab_price, tab_ai, tab_returns, tab_compare = st.tabs(["Price Chart", "AI & News", "Returns Analysis", "Comparison"])
 
 # ── Tab 1: Price Chart ───────────────────────────────────────────────────────
 with tab_price:
@@ -263,7 +263,7 @@ with tab_price:
 
 # ── Tab 2: AI & News ─────────────────────────────────────────────────────────
 with tab_ai:
-    st.markdown("### 🧠 AI Technical Recommendation")
+    st.markdown("### AI Technical Recommendation")
     # Calculate indicators
     close = stock_data['Close']
     if len(close) > 50:
@@ -308,12 +308,12 @@ with tab_ai:
         
     col_about, col_news = st.columns([1, 1])
     with col_about:
-        st.markdown("### 🏢 About Company")
+        st.markdown("### About Company")
         summary = stock_info.get('longBusinessSummary', 'Business summary not available for this ticker.')
         st.write(summary)
         
     with col_news:
-        st.markdown("### 📰 Real-Time News")
+        st.markdown("### Real-Time News")
         try:
             import yfinance as yf
             news = yf.Ticker(ticker).news
@@ -407,7 +407,7 @@ with tab_returns:
 # ── Tab 3: Comparison ────────────────────────────────────────────────────────
 with tab_compare:
     if not compare_tickers:
-        st.info("👈 Add tickers in the sidebar to compare stocks.")
+        st.info("Add tickers in the sidebar to compare stocks.")
     else:
         all_tickers = [ticker] + compare_tickers
         with st.spinner("Fetching comparison data..."):
@@ -450,7 +450,7 @@ with tab_compare:
                 st.plotly_chart(apply_dynamic_theme(fig_corr), use_container_width=True)
 
             # Comparison table
-            st.markdown("### 📋 Comparison Table")
+            st.markdown("### Comparison Table")
             comp_data = []
             for t in all_tickers:
                 if t in multi_returns.columns:

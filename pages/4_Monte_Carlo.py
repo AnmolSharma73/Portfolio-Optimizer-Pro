@@ -22,7 +22,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-setup_page(page_title="Monte Carlo Simulation", page_icon="🎲", layout="wide")
+setup_page(page_title="Monte Carlo Simulation", page_icon="activity", layout="wide")
 init_session_state()
 
 st.markdown("""
@@ -61,29 +61,29 @@ else:
     default_tickers = DEFAULT_TICKERS[:5]
 
 selected_tickers = st.sidebar.multiselect(
-    "📊 Select Stocks", options=DEFAULT_TICKERS + ['BRK-B', 'UNH', 'HD', 'PG', 'NFLX', 'AMD', 'ADBE'],
+    "Select Stocks", options=DEFAULT_TICKERS + ['BRK-B', 'UNH', 'HD', 'PG', 'NFLX', 'AMD', 'ADBE'],
     default=default_tickers[:5]
 )
 
-period = st.sidebar.selectbox("📅 Historical Period", ["1y", "2y", "3y", "5y"], index=3)
+period = st.sidebar.selectbox("Historical Period", ["1y", "2y", "3y", "5y"], index=3)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ⚙️ Simulation Settings")
+st.sidebar.markdown("### Simulation Settings")
 
 num_simulations = st.sidebar.slider(
-    "🔢 Number of Simulations",
+    "Number of Simulations",
     min_value=1000, max_value=50000, value=10000, step=1000,
     help="More simulations = more accurate results but slower"
 )
 
 st.sidebar.markdown("---")
-run_simulation = st.sidebar.button("🚀 RUN SIMULATION", use_container_width=True, type="primary")
+run_simulation = st.sidebar.button("RUN SIMULATION", use_container_width=True, type="primary")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🔮 Future Simulation")
+st.sidebar.markdown("### Future Simulation")
 future_days = st.sidebar.slider("Days to Simulate", 30, 504, 252, 21)
 num_paths = st.sidebar.slider("Number of Paths", 100, 2000, 500, 100)
-run_future = st.sidebar.button("🔮 SIMULATE FUTURE", use_container_width=True)
+run_future = st.sidebar.button("SIMULATE FUTURE", use_container_width=True)
 
 # ── Main Content ─────────────────────────────────────────────────────────────
 fx = st.session_state.get("fx_rate", 1.0)
@@ -95,7 +95,7 @@ st.markdown("*Explore thousands of random portfolio allocations to find optimal 
 st.markdown("---")
 
 if len(selected_tickers) < 2:
-    st.warning("⚠️ Select at least **2 stocks** to run a simulation.")
+    st.warning("Select at least **2 stocks** to run a simulation.")
     st.stop()
 
 # Fetch data
@@ -104,7 +104,7 @@ with st.spinner("Fetching market data..."):
     prices = fetcher.get_multiple_stocks(selected_tickers, period=period)
 
 if prices.empty:
-    st.error("❌ Failed to fetch data.")
+    st.error("Failed to fetch data.")
     st.stop()
 
 prices = DataProcessor.handle_missing_data(prices)
@@ -114,7 +114,7 @@ cov_matrix = DataProcessor.calculate_covariance_matrix(returns, method='ledoit_w
 
 # ── Run Monte Carlo ──────────────────────────────────────────────────────────
 if run_simulation:
-    with st.spinner(f"🎲 Running {num_simulations:,} simulations..."):
+    with st.spinner(f"Running {num_simulations:,} simulations..."):
         progress = st.progress(0, text="Initializing simulation...")
 
         simulator = MonteCarloSimulator(
@@ -134,7 +134,7 @@ if run_simulation:
         st.session_state['mc_optimal'] = optimal
         st.session_state['mc_simulator'] = simulator
 
-        st.success(f"✅ {num_simulations:,} portfolio simulations completed!")
+        st.success(f"{num_simulations:,} portfolio simulations completed!")
 
 # ── Display Results ──────────────────────────────────────────────────────────
 if st.session_state.get('mc_results'):
@@ -142,7 +142,7 @@ if st.session_state.get('mc_results'):
     optimal = st.session_state['mc_optimal']
 
     # Key findings
-    st.markdown("## 🏆 Key Findings")
+    st.markdown("## Key Findings")
     col1, col2, col3, col4 = st.columns(4)
 
     max_s = optimal.get('max_sharpe', {})
@@ -175,16 +175,16 @@ if st.session_state.get('mc_results'):
     st.markdown("---")
 
     # Monte Carlo Scatter Plot
-    st.markdown("### 📊 Simulation Results")
+    st.markdown("### Simulation Results")
     fig_mc = plot_monte_carlo_results(mc_results, optimal)
     st.plotly_chart(apply_dynamic_theme(fig_mc), use_container_width=True)
 
     # Optimal portfolios side by side
-    st.markdown("### 🏅 Optimal Portfolios Comparison")
+    st.markdown("### Optimal Portfolios Comparison")
     opt_col1, opt_col2 = st.columns(2)
 
     with opt_col1:
-        st.markdown("#### ⭐ Maximum Sharpe Ratio")
+        st.markdown("#### Maximum Sharpe Ratio")
         if max_s.get('weights'):
             fig_ms = plot_portfolio_allocation(
                 max_s['weights'],
@@ -203,7 +203,7 @@ if st.session_state.get('mc_results'):
             st.dataframe(pd.DataFrame(ms_data).set_index('Metric'), use_container_width=True)
 
     with opt_col2:
-        st.markdown("#### 🛡️ Minimum Volatility")
+        st.markdown("#### Minimum Volatility")
         if min_v.get('weights'):
             fig_mv = plot_portfolio_allocation(
                 min_v['weights'],
@@ -222,7 +222,7 @@ if st.session_state.get('mc_results'):
             st.dataframe(pd.DataFrame(mv_data).set_index('Metric'), use_container_width=True)
 
     # Distribution charts
-    st.markdown("### 📈 Distribution Analysis")
+    st.markdown("### Distribution Analysis")
     dist_col1, dist_col2 = st.columns(2)
 
     with dist_col1:
@@ -256,7 +256,7 @@ if run_future and st.session_state.get('mc_simulator'):
     max_s = optimal.get('max_sharpe', {})
 
     if max_s.get('weights'):
-        with st.spinner(f"🔮 Simulating {num_paths} future price paths over {future_days} days..."):
+        with st.spinner(f"Simulating {num_paths} future price paths over {future_days} days..."):
             # Get current prices and weights
             current_prices_list = [prices[t].iloc[-1] for t in selected_tickers]
             weights_arr = np.array([max_s['weights'].get(t, 0) for t in selected_tickers])
@@ -269,7 +269,7 @@ if run_future and st.session_state.get('mc_simulator'):
             )
 
             st.markdown("---")
-            st.markdown("## 🔮 Future Price Simulation")
+            st.markdown("## Future Price Simulation")
             st.markdown(f"*{num_paths} simulated paths over {future_days} trading days using Max Sharpe weights*")
 
             if simulation_paths is not None and len(simulation_paths) > 0:

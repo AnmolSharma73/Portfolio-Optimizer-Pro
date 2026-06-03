@@ -57,7 +57,7 @@ st.markdown("")
 # Welcome Banner
 st.markdown(f"""
 <div class="welcome anim">
-    <h3>Welcome to Portfolio Optimizer Pro 🚀</h3>
+    <h3>Welcome to Portfolio Optimizer Pro</h3>
     <p>
         Build optimized portfolios using <strong>Modern Portfolio Theory</strong>.
         Compare stocks, visualize the efficient frontier, run Monte Carlo simulations,
@@ -73,7 +73,7 @@ if st.session_state.get("portfolio_weights") and st.session_state.get("optimizat
     fx = st.session_state.get("fx_rate", 1.0)
     curr_sym = current_curr.split(" ")[1].strip("()")
 
-    st.markdown("### ⚡ Your Portfolio")
+    st.markdown("### Your Portfolio")
     c1, c2, c3, c4 = st.columns(4)
     c1.markdown(f"""<div class="stat-card"><div class="s-val">{format_percentage(results.get('expected_return', 0))}</div><div class="s-lbl">{_('expected_return')}</div></div>""", unsafe_allow_html=True)
     c2.markdown(f"""<div class="stat-card"><div class="s-val">{format_percentage(results.get('volatility', 0))}</div><div class="s-lbl">{_('volatility')}</div></div>""", unsafe_allow_html=True)
@@ -82,28 +82,28 @@ if st.session_state.get("portfolio_weights") and st.session_state.get("optimizat
     st.markdown("")
 
 # Feature Cards using Streamlit columns for layout and standard buttons for routing
-st.markdown("### 🧩 Tools")
+st.markdown("### Tools")
 
 features = [
     (
         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
-        _("stock_analysis"), "Research individual stocks with candlestick charts, technical indicators, and key financial statistics.", "pages/1_📈_Stock_Analysis.py"
+        _("stock_analysis"), "Research individual stocks with candlestick charts, technical indicators, and key financial statistics.", "pages/1_Stock_Analysis.py"
     ),
     (
         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00D2FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-        _("portfolio_builder"), "Select stocks and optimize using Max Sharpe, Min Volatility, or Equal Weight strategies.", "pages/2_🎯_Portfolio_Builder.py"
+        _("portfolio_builder"), "Select stocks and optimize using Max Sharpe, Min Volatility, or Equal Weight strategies.", "pages/2_Portfolio_Builder.py"
     ),
     (
         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',
-        _("efficient_frontier"), "Visualize the risk-return frontier and find the optimal portfolio allocation.", "pages/3_📊_Efficient_Frontier.py"
+        _("efficient_frontier"), "Visualize the risk-return frontier and find the optimal portfolio allocation.", "pages/3_Efficient_Frontier.py"
     ),
     (
         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
-        _("monte_carlo"), "Simulate thousands of random portfolios to explore the distribution of outcomes.", "pages/4_🎲_Monte_Carlo.py"
+        _("monte_carlo"), "Simulate thousands of random portfolios to explore the distribution of outcomes.", "pages/4_Monte_Carlo.py"
     ),
     (
         '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00E396" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
-        _("risk_analysis"), "Measure portfolio risk with Sharpe, Sortino, VaR, CVaR, drawdown, and 10+ metrics.", "pages/5_⚖️_Risk_Analysis.py"
+        _("risk_analysis"), "Measure portfolio risk with Sharpe, Sortino, VaR, CVaR, drawdown, and 10+ metrics.", "pages/5_Risk_Analysis.py"
     ),
 ]
 
@@ -124,7 +124,7 @@ for i, (svg_icon, title, desc, path) in enumerate(features):
 st.markdown("")
 
 # How it works
-with st.expander("📖 How to Use This App"):
+with st.expander("How to Use This App"):
     st.markdown("""
     **Step 1 — Stock Analysis** → Research and compare stocks using historical price data and technical indicators.
 

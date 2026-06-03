@@ -23,7 +23,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-setup_page(page_title="Portfolio Builder", page_icon="🎯", layout="wide")
+setup_page(page_title="Portfolio Builder", page_icon="pie-chart", layout="wide")
 init_session_state()
 
 # ── Custom CSS ───────────────────────────────────────────────────────────────
@@ -51,11 +51,11 @@ st.sidebar.markdown("---")
 
 all_flattened_tickers = {k: v for d in CATEGORIZED_TICKERS.values() for k, v in d.items()}
 
-if st.sidebar.button("🌟 Auto-Suggest High Growth", help="Automatically selects 5 globally top-performing stocks."):
+if st.sidebar.button("Auto-Suggest High Growth", help="Automatically selects 5 globally top-performing stocks."):
     st.session_state['selected_tickers'] = ["NVDA", "META", "ASML.AS", "TCEHY", "RELIANCE.NS"]
     
 category_options = ["All Countries"] + list(CATEGORIZED_TICKERS.keys())
-selected_category = st.sidebar.selectbox("🌍 Filter by Country", category_options, index=0)
+selected_category = st.sidebar.selectbox("Filter by Country", category_options, index=0)
 
 if selected_category == "All Countries":
     available_tickers = all_flattened_tickers
@@ -69,7 +69,7 @@ if len(valid_defaults) < 2:
     valid_defaults = list(available_tickers.keys())[:5]
 
 selected_tickers = st.sidebar.multiselect(
-    "📊 Select Stocks",
+    "Select Stocks",
     options=list(available_tickers.keys()),
     default=valid_defaults,
     format_func=lambda x: f"{x} - {available_tickers[x]}",
@@ -78,28 +78,28 @@ selected_tickers = st.sidebar.multiselect(
 st.session_state['selected_tickers'] = selected_tickers
 
 investment_amount = st.sidebar.number_input(
-    "💰 Investment Amount ($)",
+    "Investment Amount ($)",
     min_value=1000.0, max_value=10_000_000.0,
     value=float(st.session_state.get('investment_amount', 100000)),
     step=10000.0, format="%.0f"
 )
 
-period = st.sidebar.selectbox("📅 Historical Period", ["1y", "2y", "3y", "5y"], index=3)
+period = st.sidebar.selectbox("Historical Period", ["1y", "2y", "3y", "5y"], index=3)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ⚙️ Optimization Settings")
+st.sidebar.markdown("### Optimization Settings")
 
-optimization_method = st.sidebar.selectbox("🎯 Strategy", list(OPTIMIZATION_METHODS.keys()))
+optimization_method = st.sidebar.selectbox("Strategy", list(OPTIMIZATION_METHODS.keys()))
 method_key = OPTIMIZATION_METHODS[optimization_method]
 
 max_weight = st.sidebar.slider("Max Weight per Stock", 0.1, 1.0, 1.0, 0.05)
 weight_bounds = (0.0, max_weight)
 
-cov_method = st.sidebar.selectbox("📐 Covariance Method", ["Ledoit-Wolf (Shrinkage)", "Sample"], index=0)
+cov_method = st.sidebar.selectbox("Covariance Method", ["Ledoit-Wolf (Shrinkage)", "Sample"], index=0)
 cov_key = 'ledoit_wolf' if 'Ledoit' in cov_method else 'sample'
 
 st.sidebar.markdown("---")
-optimize_clicked = st.sidebar.button("🚀 OPTIMIZE PORTFOLIO", use_container_width=True, type="primary")
+optimize_clicked = st.sidebar.button("OPTIMIZE PORTFOLIO", use_container_width=True, type="primary")
 
 # ── Main Content ─────────────────────────────────────────────────────────────
 fx = st.session_state.get("fx_rate", 1.0)
@@ -111,24 +111,24 @@ st.markdown("*Select stocks and optimize your portfolio allocation*")
 st.markdown("---")
 
 if len(selected_tickers) < 2:
-    st.warning("⚠️ Please select at least **2 stocks** from the sidebar to build a portfolio.")
+    st.warning("Please select at least **2 stocks** from the sidebar to build a portfolio.")
     st.stop()
 
 # ── Fetch Data ───────────────────────────────────────────────────────────────
 fetcher = StockDataFetcher()
 
-with st.spinner("📊 Fetching market data..."):
+with st.spinner("Fetching market data..."):
     prices = fetcher.get_multiple_stocks(selected_tickers, period=period)
 
 if prices.empty:
-    st.error("❌ Failed to fetch stock data. Please check your internet connection.")
+    st.error("Failed to fetch stock data. Please check your internet connection.")
     st.stop()
 
 prices = DataProcessor.handle_missing_data(prices)
 returns = DataProcessor.calculate_returns(prices)
 
 # ── Stock Overview ───────────────────────────────────────────────────────────
-st.markdown("### 📋 Selected Stocks")
+st.markdown("### Selected Stocks")
 
 cols = st.columns(min(len(selected_tickers), 5))
 for i, t in enumerate(selected_tickers):
@@ -152,7 +152,7 @@ with col2:
 
 # ── Optimization ─────────────────────────────────────────────────────────────
 if optimize_clicked:
-    with st.spinner("🧮 Optimizing portfolio..."):
+    with st.spinner("Optimizing portfolio..."):
         try:
             expected_returns = DataProcessor.calculate_annualized_returns(returns)
             cov_matrix = DataProcessor.calculate_covariance_matrix(returns, method=cov_key)
@@ -173,10 +173,10 @@ if optimize_clicked:
                 st.session_state['optimization_result'] = result
                 st.session_state['prices'] = prices
                 st.session_state['returns'] = returns
-                st.success("✅ Portfolio optimized successfully!")
+                st.success("Portfolio optimized successfully!")
 
         except Exception as e:
-            st.error(f"❌ Optimization failed: {str(e)}")
+            st.error(f"Optimization failed: {str(e)}")
 
 # ── Display Results ──────────────────────────────────────────────────────────
 if st.session_state.get('optimized') and st.session_state.get('optimization_result'):
@@ -184,7 +184,7 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
     weights = result['weights']
 
     st.markdown("---")
-    st.markdown("## 🏆 Optimized Portfolio")
+    st.markdown("## Optimized Portfolio")
 
     mc1, mc2, mc3, mc4 = st.columns(4)
     mc1.markdown(f"""<div class="result-card"><div class="result-label">{_('expected_return')}</div><div class="result-value">{{result['expected_return']:.2%}}</div></div>""", unsafe_allow_html=True)
@@ -202,7 +202,7 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
         st.plotly_chart(apply_dynamic_theme(fig_alloc), use_container_width=True)
 
     with table_col:
-        st.markdown("### 📊 Portfolio Weights")
+        st.markdown("### Portfolio Weights")
         rows = []
         for t, w in sorted(weights.items(), key=lambda x: -abs(x[1])):
             if abs(w) > 0.001:
@@ -217,4 +217,4 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
         if rows:
             st.dataframe(pd.DataFrame(rows).set_index('Ticker'), use_container_width=True, height=350)
 
-    st.info("💡 **Tip:** Your optimized portfolio is saved. Navigate to Efficient Frontier, Monte Carlo, or Risk Analysis to analyze it further!")
+    st.info("**Tip:** Your optimized portfolio is saved. Navigate to Efficient Frontier, Monte Carlo, or Risk Analysis to analyze it further!")

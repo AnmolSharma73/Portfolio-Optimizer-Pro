@@ -34,7 +34,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ── Page configuration ────────────────────────────────────────────────────────
-setup_page(page_title=f"Efficient Frontier - {APP_NAME}", page_icon="📊", layout="wide")
+setup_page(page_title=f"Efficient Frontier - {APP_NAME}", page_icon="scatter-plot", layout="wide")
 
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown(
@@ -194,11 +194,11 @@ def _weights_donut(weights: dict, title: str = "Portfolio Allocation") -> go.Fig
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with st.sidebar:
-    st.markdown("## ⚙️ Frontier Settings")
+    st.markdown("## Frontier Settings")
     st.markdown("---")
 
     selected_tickers = st.multiselect(
-        "📈 Select Tickers",
+        "Select Tickers",
         options=DEFAULT_TICKERS,
         default=DEFAULT_TICKERS[:5],
         help="Choose at least 2 assets to construct the frontier.",
@@ -206,7 +206,7 @@ with st.sidebar:
     )
 
     period = st.selectbox(
-        "📅 Historical Period",
+        "Historical Period",
         options=["1y", "2y", "3y", "5y", "10y"],
         index=3,
         help="Lookback window for return estimation.",
@@ -214,7 +214,7 @@ with st.sidebar:
     )
 
     num_points = st.slider(
-        "🔢 Frontier Points",
+        "Frontier Points",
         min_value=20,
         max_value=200,
         value=50,
@@ -225,7 +225,7 @@ with st.sidebar:
 
     st.markdown("---")
     generate_btn = st.button(
-        "📊 Generate Frontier",
+        "Generate Frontier",
         type="primary",
         use_container_width=True,
         key="ef_generate",
@@ -237,7 +237,7 @@ with st.sidebar:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.markdown(
-    f'<h1 class="header-gradient">📊 {_("efficient_frontier")}</h1>',
+    f'<h1 class="header-gradient">{_("efficient_frontier")}</h1>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -263,16 +263,16 @@ st.markdown(
 if generate_btn:
     # ── Validation ────────────────────────────────────────────────────────
     if len(selected_tickers) < 2:
-        st.error("⚠️ Please select at least **2 tickers** to plot the frontier.")
+        st.error("Please select at least **2 tickers** to plot the frontier.")
         st.stop()
 
-    with st.spinner("🔄 Fetching market data & computing the efficient frontier …"):
+    with st.spinner("Fetching market data & computing the efficient frontier …"):
         # 1. Fetch prices ──────────────────────────────────────────────────
         fetcher = StockDataFetcher()
         prices = fetcher.get_multiple_stocks(selected_tickers, period=period)
 
         if prices.empty or prices.shape[1] < 2:
-            st.error("❌ Could not fetch sufficient price data. Try different tickers.")
+            st.error("Could not fetch sufficient price data. Try different tickers.")
             st.stop()
 
         # 2. Calculate returns & covariance ────────────────────────────────
@@ -292,7 +292,7 @@ if generate_btn:
         frontier_data = ef_calc.compute_frontier()
 
         if not frontier_data["returns"]:
-            st.error("❌ Could not compute the efficient frontier — try adjusting inputs.")
+            st.error("Could not compute the efficient frontier — try adjusting inputs.")
             st.stop()
 
         # 4. Key portfolios ────────────────────────────────────────────────
@@ -313,7 +313,7 @@ if generate_btn:
     # Interactive Efficient Frontier chart
     # ══════════════════════════════════════════════════════════════════════
 
-    st.markdown("### 🗺️ Efficient Frontier & Capital Market Line")
+    st.markdown("### Efficient Frontier & Capital Market Line")
 
     fig = go.Figure()
 
@@ -479,7 +479,7 @@ if generate_btn:
     # ══════════════════════════════════════════════════════════════════════
 
     tab_sharpe, tab_minvol, tab_compare = st.tabs(
-        ["🎯 Max Sharpe", "🛡️ Min Volatility", "📊 Comparison"]
+        ["Max Sharpe", "Min Volatility", "Comparison"]
     )
 
     # ── Tab 1: Max Sharpe ─────────────────────────────────────────────────
@@ -534,7 +534,7 @@ if generate_btn:
 
     # ── Tab 3: Side-by-side comparison ────────────────────────────────────
     with tab_compare:
-        st.markdown("#### ⚖️ Portfolio Weights — Side-by-Side")
+        st.markdown("#### Portfolio Weights — Side-by-Side")
 
         comparison_rows = []
         all_tickers_sorted = sorted(
@@ -566,7 +566,7 @@ if generate_btn:
         )
 
         # Summary metrics comparison
-        st.markdown("#### 📋 Performance Summary")
+        st.markdown("#### Performance Summary")
         summary_df = pd.DataFrame(
             {
                 "Metric": ["Expected Return", "Volatility", "Sharpe Ratio"],
@@ -597,7 +597,7 @@ if generate_btn:
     # Educational expander
     # ══════════════════════════════════════════════════════════════════════
 
-    with st.expander("📚 Understanding the Efficient Frontier", expanded=False):
+    with st.expander("Understanding the Efficient Frontier", expanded=False):
         st.markdown(
             """
             #### What is the Efficient Frontier?
@@ -637,7 +637,7 @@ else:
         st.markdown(
             """
             <div style="text-align: center; padding: 80px 20px;">
-                <div style="font-size: 4rem; margin-bottom: 16px;">📊</div>
+                <div style="font-size: 4rem; margin-bottom: 16px;"></div>
                 <h3 style="color: #E0E0E0; margin-bottom: 8px;">
                     Ready to Explore the Frontier
                 </h3>

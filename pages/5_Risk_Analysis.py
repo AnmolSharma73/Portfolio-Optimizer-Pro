@@ -26,7 +26,7 @@ from utils.translations import _
 from utils.ui import setup_page
 
 # ── Page Config ──────────────────────────────────────────────────────────────
-setup_page(page_title="Risk Analysis", page_icon="⚖️", layout="wide")
+setup_page(page_title="Risk Analysis", page_icon="shield", layout="wide")
 init_session_state()
 
 st.markdown("""
@@ -87,15 +87,15 @@ else:
     # Equal weight if no portfolio
     weights = {t: 1.0/len(selected_tickers) for t in selected_tickers} if selected_tickers else {}
 
-period = st.sidebar.selectbox("📅 Period", ["1y", "2y", "3y", "5y"], index=3)
+period = st.sidebar.selectbox("Period", ["1y", "2y", "3y", "5y"], index=3)
 
 benchmark_options = {"S&P 500": "^GSPC", "NASDAQ": "^IXIC", "Dow Jones": "^DJI", "Russell 2000": "^RUT"}
-benchmark_name = st.sidebar.selectbox("📊 Benchmark", list(benchmark_options.keys()))
+benchmark_name = st.sidebar.selectbox("Benchmark", list(benchmark_options.keys()))
 benchmark_ticker = benchmark_options[benchmark_name]
 
 confidence_level = st.sidebar.slider("VaR Confidence Level", 0.90, 0.99, 0.95, 0.01)
 
-analyze_clicked = st.sidebar.button("📊 ANALYZE RISK", use_container_width=True, type="primary")
+analyze_clicked = st.sidebar.button("ANALYZE RISK", use_container_width=True, type="primary")
 
 # ── Main Content ─────────────────────────────────────────────────────────────
 fx = st.session_state.get("fx_rate", 1.0)
@@ -107,7 +107,7 @@ st.markdown("*Comprehensive risk metrics, VaR analysis, drawdowns & rolling perf
 st.markdown("---")
 
 if len(selected_tickers) < 1:
-    st.warning("⚠️ Select at least 1 stock.")
+    st.warning("Select at least 1 stock.")
     st.stop()
 
 # Fetch data
@@ -117,7 +117,7 @@ with st.spinner("Fetching data..."):
     benchmark_data = fetcher.get_stock_data(benchmark_ticker, period=period)
 
 if prices.empty:
-    st.error("❌ Failed to fetch data.")
+    st.error("Failed to fetch data.")
     st.stop()
 
 prices = DataProcessor.handle_missing_data(prices)
@@ -149,7 +149,7 @@ all_metrics = RiskMetrics.get_all_metrics(
 )
 
 # ── Top Risk Metrics Cards ──────────────────────────────────────────────────
-st.markdown("### 📊 Key Risk Metrics")
+st.markdown("### Key Risk Metrics")
 
 def get_risk_class(metric_name, value):
     """Determine CSS class based on metric value."""
@@ -185,7 +185,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 tab_overview, tab_drawdown, tab_var, tab_rolling, tab_corr = st.tabs([
-    "📋 Overview", "📉 Drawdown", "📊 Value at Risk", "📈 Rolling Metrics", "🔗 Correlation"
+    "Overview", "Drawdown", "Value at Risk", "Rolling Metrics", "Correlation"
 ])
 
 # ── Tab 1: Overview ──────────────────────────────────────────────────────────
@@ -193,7 +193,7 @@ with tab_overview:
     ov_col1, ov_col2 = st.columns([1, 1])
 
     with ov_col1:
-        st.markdown("#### 📊 All Risk Metrics")
+        st.markdown("#### All Risk Metrics")
         metrics_display = []
         display_map = {
             'annualized_return': ('Annualized Return', '.2%'),
@@ -228,7 +228,7 @@ with tab_overview:
                      use_container_width=True, height=500)
 
     with ov_col2:
-        st.markdown("#### 📈 Cumulative Returns")
+        st.markdown("#### Cumulative Returns")
         returns_dict = {'Portfolio': portfolio_returns}
         if benchmark_returns is not None:
             returns_dict[benchmark_name] = benchmark_returns
@@ -237,7 +237,7 @@ with tab_overview:
 
         # Per-stock metrics if multiple
         if len(selected_tickers) > 1:
-            st.markdown("#### 📊 Per-Stock Metrics")
+            st.markdown("#### Per-Stock Metrics")
             stock_metrics = []
             for t in selected_tickers:
                 if t in returns.columns:
@@ -267,7 +267,7 @@ with tab_drawdown:
     dd3.metric("Current Drawdown", f"{dd_series.iloc[-1]:.2%}")
 
     # Top 5 drawdowns
-    st.markdown("#### 📉 Significant Drawdown Periods")
+    st.markdown("#### Significant Drawdown Periods")
     st.info("Drawdown measures peak-to-trough decline. A drawdown of -20% means the portfolio lost 20% from its peak.")
 
 # ── Tab 3: Value at Risk ─────────────────────────────────────────────────────
@@ -275,7 +275,7 @@ with tab_var:
     var_col1, var_col2 = st.columns(2)
 
     with var_col1:
-        st.markdown("#### 📊 Historical VaR Distribution")
+        st.markdown("#### Historical VaR Distribution")
         fig_var = go.Figure()
 
         fig_var.add_trace(go.Histogram(
@@ -301,7 +301,7 @@ with tab_var:
         st.plotly_chart(apply_dynamic_theme(fig_var), use_container_width=True)
 
     with var_col2:
-        st.markdown("#### 📋 VaR Summary")
+        st.markdown("#### VaR Summary")
 
         var_parametric = RiskMetrics.value_at_risk(portfolio_returns, confidence=confidence_level, method='parametric')
         var_historical = RiskMetrics.value_at_risk(portfolio_returns, confidence=confidence_level, method='historical')
@@ -319,7 +319,7 @@ with tab_var:
         st.dataframe(pd.DataFrame(var_data).set_index('Method'), use_container_width=True)
 
         st.markdown("---")
-        st.markdown("#### 📖 Interpretation")
+        st.markdown("#### Interpretation")
         st.markdown(f"""
         - **VaR ({confidence_level:.0%})**: On {(1-confidence_level)*100:.0f}% of days, the portfolio could lose more than 
           **{format_currency(abs(var_historical) * inv_amt * fx, curr_sym)}** on a **{format_currency(inv_amt * fx, curr_sym)}** investment.
