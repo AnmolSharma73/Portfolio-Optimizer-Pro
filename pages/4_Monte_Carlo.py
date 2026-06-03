@@ -17,7 +17,7 @@ from optimization.monte_carlo import MonteCarloSimulator
 from visualization.charts import plot_monte_carlo_results, plot_portfolio_allocation, plot_future_simulation
 from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, TRADING_DAYS, RISK_FREE_RATE, COLOR_PALETTE
-from utils.helpers import format_percentage, format_currency
+from utils.helpers import format_percentage, format_currency, init_session_state
 from utils.translations import _
 from utils.ui import setup_page
 
