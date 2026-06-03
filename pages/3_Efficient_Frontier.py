@@ -284,7 +284,6 @@ if generate_btn:
                 colorbar=dict(
                     title=dict(text="Sharpe"),
                     len=0.5,
-                    len=0.5,
                     x=1.02,
                 ),
                 showscale=True,
