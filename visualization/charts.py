@@ -930,9 +930,8 @@ def plot_future_simulation(
     """
     fig = go.Figure()
 
-    import numpy as np
     import pandas as pd
-    if isinstance(simulation_paths, np.ndarray):
+    if not hasattr(simulation_paths, "columns") and hasattr(simulation_paths, "shape"):
         # The simulator returns an array of shape (num_paths, days).
         # We need a DataFrame where each column is a path.
         simulation_paths = pd.DataFrame(simulation_paths).T
