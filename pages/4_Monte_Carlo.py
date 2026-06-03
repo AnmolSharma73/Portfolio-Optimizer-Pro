@@ -37,7 +37,7 @@ st.markdown("""
     }
     .mc-label {
         font-size: 0.8rem;
-        color: #8892A0;
+        color: var(--theme-muted);
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
@@ -257,13 +257,11 @@ if run_future and st.session_state.get('mc_simulator'):
 
     if max_s.get('weights'):
         with st.spinner(f"Simulating {num_paths} future price paths over {future_days} days..."):
-            # Get current prices and weights
-            current_prices_list = [prices[t].iloc[-1] for t in selected_tickers]
-            weights_arr = np.array([max_s['weights'].get(t, 0) for t in selected_tickers])
+            current_prices_series = pd.Series({t: prices[t].iloc[-1] for t in selected_tickers})
 
             simulation_paths = simulator.simulate_future_prices(
-                current_prices=np.array(current_prices_list),
-                weights=weights_arr,
+                current_prices=current_prices_series,
+                weights=max_s['weights'],
                 days=future_days,
                 num_paths=num_paths
             )

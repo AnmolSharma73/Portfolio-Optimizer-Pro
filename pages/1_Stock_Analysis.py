@@ -41,12 +41,12 @@ st.markdown("""
     .stock-name {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #E0E0E0;
+        color: var(--theme-fg);
         margin-bottom: 0.2rem;
     }
     .stock-sector {
         font-size: 0.95rem;
-        color: #8892A0;
+        color: var(--theme-muted);
     }
     .price-big {
         font-size: 2.5rem;
@@ -54,7 +54,7 @@ st.markdown("""
         color: #6C63FF;
     }
     .stat-card {
-        background: rgba(26,31,46,0.8);
+        background: var(--theme-card);
         border: 1px solid rgba(108,99,255,0.15);
         border-radius: 12px;
         padding: 1rem 1.2rem;
@@ -67,14 +67,14 @@ st.markdown("""
     }
     .stat-label {
         font-size: 0.8rem;
-        color: #8892A0;
+        color: var(--theme-muted);
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
     .stat-value {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #E0E0E0;
+        color: var(--theme-fg);
         margin-top: 0.3rem;
     }
 </style>

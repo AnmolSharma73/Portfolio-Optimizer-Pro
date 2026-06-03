@@ -36,7 +36,7 @@ st.markdown("""
         transition: all 0.3s ease;
     }
     .result-card:hover { border-color: rgba(102,126,234,0.4); box-shadow: 0 0 15px rgba(102,126,234,0.1); }
-    .result-label { font-size: 0.78rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+    .result-label { font-size: 0.78rem; color: var(--theme-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
     .result-value {
         font-size: 1.8rem; font-weight: 800;
         background: linear-gradient(135deg, #667eea, #00D2FF);

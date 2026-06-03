@@ -32,7 +32,7 @@ init_session_state()
 st.markdown("""
 <style>
     .risk-card {
-        background: rgba(26,31,46,0.85);
+        background: var(--theme-card);
         border: 1px solid rgba(108,99,255,0.2);
         border-radius: 14px;
         padding: 1.2rem;
@@ -50,7 +50,7 @@ st.markdown("""
     }
     .risk-label {
         font-size: 0.75rem;
-        color: #8892A0;
+        color: var(--theme-muted);
         text-transform: uppercase;
         letter-spacing: 0.06em;
     }
