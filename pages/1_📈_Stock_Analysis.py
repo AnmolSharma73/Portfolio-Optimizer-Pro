@@ -133,11 +133,11 @@ if stock_data.empty:
 company_name = stock_info.get('longName', stock_info.get('shortName', ticker))
 sector = stock_info.get('sector', 'N/A')
 industry = stock_info.get('industry', 'N/A')
-current_price = stock_info.get('currentPrice', stock_info.get('regularMarketPrice', stock_data['Close'].iloc[-1]))
-prev_close = stock_info.get('previousClose', stock_info.get('regularMarketPreviousClose', stock_data['Close'].iloc[-2] if len(stock_data) > 1 else current_price))
+current_price = stock_info.get('currentPrice') or stock_info.get('regularMarketPrice') or stock_data['Close'].iloc[-1]
+prev_close = stock_info.get('previousClose') or stock_info.get('regularMarketPreviousClose') or (stock_data['Close'].iloc[-2] if len(stock_data) > 1 else current_price)
 
-price_change = current_price - prev_close
-price_change_pct = (price_change / prev_close * 100) if prev_close != 0 else 0
+price_change = (current_price or 0) - (prev_close or 0)
+price_change_pct = (price_change / prev_close * 100) if prev_close else 0
 change_color = COLOR_PALETTE['success'] if price_change >= 0 else COLOR_PALETTE['danger']
 change_arrow = "▲" if price_change >= 0 else "▼"
 
@@ -162,12 +162,12 @@ st.markdown(f"""
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 stats = {
-    _("market_cap"): format_currency((stock_info.get('marketCap', 0) * fx), curr_sym),
-    "52W High": format_currency((stock_info.get('fiftyTwoWeekHigh', 0) * fx), curr_sym),
-    "52W Low": format_currency((stock_info.get('fiftyTwoWeekLow', 0) * fx), curr_sym),
-    "Avg Volume": format_large_number(stock_info.get('averageVolume', 0)),
+    _("market_cap"): curr_sym + format_large_number((stock_info.get('marketCap') or 0) * fx),
+    "52W High": format_currency(((stock_info.get('fiftyTwoWeekHigh') or 0) * fx), curr_sym),
+    "52W Low": format_currency(((stock_info.get('fiftyTwoWeekLow') or 0) * fx), curr_sym),
+    "Avg Volume": format_large_number(stock_info.get('averageVolume') or 0),
     "P/E Ratio": f"{stock_info.get('trailingPE', 'N/A'):.2f}" if isinstance(stock_info.get('trailingPE'), (int, float)) else "N/A",
-    "Div Yield": format_percentage(stock_info.get('dividendYield', 0)) if stock_info.get('dividendYield') else "N/A"
+    "Div Yield": format_percentage(stock_info.get('dividendYield') or 0) if stock_info.get('dividendYield') else "N/A"
 }
 
 for col, (label, value) in zip([col1, col2, col3, col4, col5, col6], stats.items()):
