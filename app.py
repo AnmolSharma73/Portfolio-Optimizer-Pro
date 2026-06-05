@@ -5,7 +5,7 @@ importlib.reload(config.settings)
 from config.settings import *
 from utils.helpers import *
 from utils.translations import _
-from utils.ui import setup_page
+from utils.ui import setup_page, render_settings
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 setup_page(page_title=APP_NAME, page_icon="bar-chart", layout="wide")
@@ -143,3 +143,6 @@ st.markdown(f"""
     Portfolio Optimizer Pro v2.0 &nbsp;•&nbsp; Powered by Modern Portfolio Theory &nbsp;•&nbsp; Real-time Data via Yahoo Finance
 </div>
 """, unsafe_allow_html=True)
+
+render_settings()
+

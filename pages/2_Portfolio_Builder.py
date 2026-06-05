@@ -20,7 +20,7 @@ from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import CATEGORIZED_TICKERS, RISK_FREE_RATE, TRADING_DAYS, OPTIMIZATION_METHODS, COLOR_PALETTE
 from utils.helpers import format_currency, format_percentage, init_session_state
 from utils.translations import _
-from utils.ui import setup_page
+from utils.ui import setup_page, render_settings
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 setup_page(page_title="Portfolio Builder", page_icon="pie-chart", layout="wide")
@@ -218,3 +218,6 @@ if st.session_state.get('optimized') and st.session_state.get('optimization_resu
             st.dataframe(pd.DataFrame(rows).set_index('Ticker'), use_container_width=True, height=350)
 
     st.info("**Tip:** Your optimized portfolio is saved. Navigate to Efficient Frontier, Monte Carlo, or Risk Analysis to analyze it further!")
+
+render_settings()
+

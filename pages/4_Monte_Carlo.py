@@ -19,7 +19,7 @@ from visualization.styles import get_chart_layout, apply_dynamic_theme, COLORS
 from config.settings import DEFAULT_TICKERS, TRADING_DAYS, RISK_FREE_RATE, COLOR_PALETTE
 from utils.helpers import format_percentage, format_currency, init_session_state
 from utils.translations import _
-from utils.ui import setup_page
+from utils.ui import setup_page, render_settings
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 setup_page(page_title="Monte Carlo Simulation", page_icon="activity", layout="wide")
@@ -293,3 +293,6 @@ if run_future and st.session_state.get('mc_simulator'):
                           f"{(final_values > initial_value).mean():.1%}")
     else:
         st.warning("Run Monte Carlo simulation first to get optimal weights for future simulation.")
+
+render_settings()
+

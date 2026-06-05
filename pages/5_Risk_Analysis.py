@@ -23,7 +23,7 @@ from config.settings import (DEFAULT_TICKERS, RISK_FREE_RATE, TRADING_DAYS,
                               COLOR_PALETTE, DEFAULT_BENCHMARK, DEFAULT_PERIOD)
 from utils.helpers import format_currency, format_percentage, init_session_state
 from utils.translations import _
-from utils.ui import setup_page
+from utils.ui import setup_page, render_settings
 
 # ── Page Config ──────────────────────────────────────────────────────────────
 setup_page(page_title="Risk Analysis", page_icon="shield", layout="wide")
@@ -372,3 +372,6 @@ with tab_corr:
         st.plotly_chart(apply_dynamic_theme(fig_corr), use_container_width=True)
     else:
         st.info("Select multiple stocks to see correlation analysis.")
+
+render_settings()
+

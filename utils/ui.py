@@ -139,6 +139,14 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         st.page_link("pages/4_Monte_Carlo.py", label=_("monte_carlo"), icon=":material/casino:")
         st.page_link("pages/5_Risk_Analysis.py", label=_("risk_analysis"), icon=":material/security:")
 
+def render_settings():
+    """Render the bottom settings and status bar in the sidebar. Must be called at the end of each page."""
+    import streamlit as st
+    from utils.translations import _
+    from config.settings import SUPPORTED_LANGUAGES, SUPPORTED_CURRENCIES
+    from data.fetcher import StockDataFetcher
+
+    with st.sidebar:
         st.markdown("---")
         st.markdown(f"### {_('settings')}")
         

@@ -31,7 +31,7 @@ from config.settings import (
 from utils.helpers import format_percentage, format_currency, create_metric_card
 from visualization.styles import apply_dynamic_theme
 from utils.translations import _
-from utils.ui import setup_page
+from utils.ui import setup_page, render_settings
 
 # ── Page configuration ────────────────────────────────────────────────────────
 setup_page(page_title=f"Efficient Frontier - {APP_NAME}", page_icon="scatter-plot", layout="wide")
@@ -591,3 +591,6 @@ else:
             """,
             unsafe_allow_html=True,
         )
+
+render_settings()
+
