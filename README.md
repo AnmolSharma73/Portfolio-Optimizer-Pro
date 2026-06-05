@@ -2,7 +2,7 @@
 
 A Python-based portfolio optimization and analysis dashboard built with **Streamlit**, powered by **Modern Portfolio Theory (MPT)**.
 
-🌐 **Live Demo:** [https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app/](https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app/)
+🌐 **Live Demo:** [https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app/](https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app)
 
 ## 🎯 Features
 
