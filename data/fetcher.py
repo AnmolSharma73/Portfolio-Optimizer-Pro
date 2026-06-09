@@ -55,7 +55,11 @@ def _fetch_multiple_stocks(tickers: tuple, period: str = "5y", interval: str = "
 def _fetch_stock_info(ticker: str) -> dict:
     """Return the yfinance .info dict, supplemented by .fast_info if missing."""
     t = yf.Ticker(ticker)
-    info = t.info or {}
+    
+    try:
+        info = t.info or {}
+    except Exception:
+        info = {}
     
     # yfinance .info frequently drops important keys on weekends or for international stocks.
     # .fast_info is much more reliable. We inject these into the dict if missing.
