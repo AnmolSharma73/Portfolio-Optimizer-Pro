@@ -17,73 +17,68 @@ import yfinance as yf
 @st.cache_data(ttl=3600, show_spinner=False)
 def _fetch_stock_data(ticker: str, period: str = "5y", interval: str = "1d") -> pd.DataFrame:
     """Download OHLCV data for a single ticker."""
-    try:
-        data = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
-        if data.empty:
-            return pd.DataFrame()
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
-        return data
-    except Exception:
-        return pd.DataFrame()
+    data = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
+    if data.empty:
+        raise ValueError(f"No data fetched for {ticker}")
+    if isinstance(data.columns, pd.MultiIndex):
+        data.columns = data.columns.get_level_values(0)
+    return data
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _fetch_multiple_stocks(tickers: tuple, period: str = "5y", interval: str = "1d") -> pd.DataFrame:
     """Download adjusted close prices for multiple tickers."""
-    try:
-        tickers_list = list(tickers)
-        data = yf.download(tickers_list, period=period, interval=interval,
-                           progress=False, auto_adjust=True, group_by="ticker")
-        if data.empty:
-            return pd.DataFrame()
+    tickers_list = list(tickers)
+    data = yf.download(tickers_list, period=period, interval=interval,
+                       progress=False, auto_adjust=True, group_by="ticker")
+    if data.empty:
+        raise ValueError("Failed to fetch data for multiple tickers")
 
-        if isinstance(data.columns, pd.MultiIndex):
-            close_prices = pd.DataFrame()
-            for tkr in tickers_list:
-                try:
-                    if tkr in data.columns.get_level_values(0):
-                        close_prices[tkr] = data[(tkr, "Close")]
-                except KeyError:
-                    continue
-            return close_prices if not close_prices.empty else pd.DataFrame()
-        else:
-            if len(tickers_list) == 1:
-                return data[["Close"]].rename(columns={"Close": tickers_list[0]})
-            return data
-    except Exception:
-        return pd.DataFrame()
+    if isinstance(data.columns, pd.MultiIndex):
+        close_prices = pd.DataFrame()
+        for tkr in tickers_list:
+            try:
+                if tkr in data.columns.get_level_values(0):
+                    close_prices[tkr] = data[(tkr, "Close")]
+            except KeyError:
+                continue
+        if close_prices.empty:
+            raise ValueError("No close prices found for any ticker")
+        return close_prices
+    else:
+        if len(tickers_list) == 1:
+            return data[["Close"]].rename(columns={"Close": tickers_list[0]})
+        return data
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _fetch_stock_info(ticker: str) -> dict:
     """Return the yfinance .info dict, supplemented by .fast_info if missing."""
+    t = yf.Ticker(ticker)
+    info = t.info or {}
+    
+    # yfinance .info frequently drops important keys on weekends or for international stocks.
+    # .fast_info is much more reliable. We inject these into the dict if missing.
     try:
-        t = yf.Ticker(ticker)
-        info = t.info or {}
-        
-        # yfinance .info frequently drops important keys on weekends or for international stocks.
-        # .fast_info is much more reliable. We inject these into the dict if missing.
-        try:
-            fast = t.fast_info
-            if 'marketCap' not in info and 'market_cap' in fast:
-                info['marketCap'] = fast['market_cap']
-            if 'regularMarketPrice' not in info and 'last_price' in fast:
-                info['regularMarketPrice'] = fast['last_price']
-            if 'previousClose' not in info and 'previous_close' in fast:
-                info['previousClose'] = fast['previous_close']
-            if 'fiftyTwoWeekHigh' not in info and 'year_high' in fast:
-                info['fiftyTwoWeekHigh'] = fast['year_high']
-            if 'fiftyTwoWeekLow' not in info and 'year_low' in fast:
-                info['fiftyTwoWeekLow'] = fast['year_low']
-            if 'averageVolume' not in info and 'last_volume' in fast:
-                info['averageVolume'] = fast['last_volume']
-        except Exception:
-            pass
-            
-        return info
+        fast = t.fast_info
+        if 'marketCap' not in info and 'market_cap' in fast:
+            info['marketCap'] = fast['market_cap']
+        if 'regularMarketPrice' not in info and 'last_price' in fast:
+            info['regularMarketPrice'] = fast['last_price']
+        if 'previousClose' not in info and 'previous_close' in fast:
+            info['previousClose'] = fast['previous_close']
+        if 'fiftyTwoWeekHigh' not in info and 'year_high' in fast:
+            info['fiftyTwoWeekHigh'] = fast['year_high']
+        if 'fiftyTwoWeekLow' not in info and 'year_low' in fast:
+            info['fiftyTwoWeekLow'] = fast['year_low']
+        if 'averageVolume' not in info and 'last_volume' in fast:
+            info['averageVolume'] = fast['last_volume']
     except Exception:
-        return {}
+        pass
+        
+    if not info:
+        raise ValueError(f"No info fetched for {ticker}")
+    return info
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -127,19 +122,31 @@ class StockDataFetcher:
 
     def get_stock_data(self, ticker: str, period: str = "5y", interval: str = "1d") -> pd.DataFrame:
         """Download OHLCV data for a single ticker."""
-        return _fetch_stock_data(ticker, period, interval)
+        try:
+            return _fetch_stock_data(ticker, period, interval)
+        except Exception:
+            return pd.DataFrame()
 
     def get_multiple_stocks(self, tickers: List[str], period: str = "5y", interval: str = "1d") -> pd.DataFrame:
         """Download adjusted close prices for a list of tickers."""
-        return _fetch_multiple_stocks(tuple(sorted(tickers)), period, interval)
+        try:
+            return _fetch_multiple_stocks(tuple(sorted(tickers)), period, interval)
+        except Exception:
+            return pd.DataFrame()
 
     def get_stock_info(self, ticker: str) -> dict:
         """Return company info dict from Yahoo Finance."""
-        return _fetch_stock_info(ticker)
+        try:
+            return _fetch_stock_info(ticker)
+        except Exception:
+            return {}
 
     def get_current_price(self, ticker: str) -> Optional[float]:
         """Return the most recent closing price."""
-        return _fetch_current_price(ticker)
+        try:
+            return _fetch_current_price(ticker)
+        except Exception:
+            return None
 
     def get_market_caps(self, tickers: List[str]) -> Dict[str, Optional[float]]:
         """Return market capitalisation for each ticker."""
