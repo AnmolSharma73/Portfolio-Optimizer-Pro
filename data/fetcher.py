@@ -61,18 +61,18 @@ def _fetch_stock_info(ticker: str) -> dict:
     # .fast_info is much more reliable. We inject these into the dict if missing.
     try:
         fast = t.fast_info
-        if 'marketCap' not in info and 'market_cap' in fast:
-            info['marketCap'] = fast['market_cap']
-        if 'regularMarketPrice' not in info and 'last_price' in fast:
-            info['regularMarketPrice'] = fast['last_price']
-        if 'previousClose' not in info and 'previous_close' in fast:
-            info['previousClose'] = fast['previous_close']
-        if 'fiftyTwoWeekHigh' not in info and 'year_high' in fast:
-            info['fiftyTwoWeekHigh'] = fast['year_high']
-        if 'fiftyTwoWeekLow' not in info and 'year_low' in fast:
-            info['fiftyTwoWeekLow'] = fast['year_low']
-        if 'averageVolume' not in info and 'last_volume' in fast:
-            info['averageVolume'] = fast['last_volume']
+        if 'marketCap' not in info and getattr(fast, 'market_cap', None):
+            info['marketCap'] = fast.market_cap
+        if 'regularMarketPrice' not in info and getattr(fast, 'last_price', None):
+            info['regularMarketPrice'] = fast.last_price
+        if 'previousClose' not in info and getattr(fast, 'previous_close', None):
+            info['previousClose'] = fast.previous_close
+        if 'fiftyTwoWeekHigh' not in info and getattr(fast, 'year_high', None):
+            info['fiftyTwoWeekHigh'] = fast.year_high
+        if 'fiftyTwoWeekLow' not in info and getattr(fast, 'year_low', None):
+            info['fiftyTwoWeekLow'] = fast.year_low
+        if 'averageVolume' not in info and getattr(fast, 'last_volume', None):
+            info['averageVolume'] = fast.last_volume
     except Exception:
         pass
         
