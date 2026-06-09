@@ -125,56 +125,26 @@ def get_chart_layout(
     height: int = 500,
     showlegend: bool = True,
 ) -> dict:
-    """Return a layout dict that applies the ``portfolio_dark`` template.
-
-    Parameters
-    ----------
-    title : str
-        Chart title text.
-    height : int
-        Height of the chart in pixels.
-    showlegend : bool
-        Whether the legend should be visible.
-
-    Returns
-    -------
-    dict
-        A Plotly-compatible layout dict.
-    """
-    import streamlit as st
-    theme = st.session_state.get("theme", "dark")
-    bg_color = "#0E1117" if theme == "dark" else "#F8FAFC"
-    card_color = "#1A1F2E" if theme == "dark" else "#FFFFFF"
-    text_color = "#E0E0E0" if theme == "dark" else "#0F172A"
-    grid_color = "#252B3B" if theme == "dark" else "#E2E8F0"
-
     layout = {
         "template":   "portfolio_dark",
         "title":      {"text": title} if title else {},
         "height":     height,
         "showlegend": showlegend,
-        "paper_bgcolor": bg_color,
-        "plot_bgcolor":  card_color,
-        "font": {"color": text_color},
+        "paper_bgcolor": "rgba(0,0,0,0)",
+        "plot_bgcolor":  "rgba(0,0,0,0)",
+        "margin": dict(t=50, b=30, l=30, r=30),
     }
     return layout
 
 def apply_dynamic_theme(fig):
-    import streamlit as st
-    theme = st.session_state.get("theme", "dark")
-    bg_color = "#0E1117" if theme == "dark" else "#F8FAFC"
-    card_color = "#1A1F2E" if theme == "dark" else "#FFFFFF"
-    text_color = "#E0E0E0" if theme == "dark" else "#0F172A"
-    grid_color = "rgba(255,255,255,0.06)" if theme == "dark" else "rgba(0,0,0,0.06)"
-
+    """
+    Since we now rely on Streamlit's native theme features, we let Streamlit natively
+    handle the Plotly theme wrapper. We just ensure the backgrounds are transparent.
+    """
     fig.update_layout(
-        paper_bgcolor=bg_color,
-        plot_bgcolor=card_color,
-        font=dict(color=text_color),
-        legend=dict(font=dict(color=text_color)),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)"
     )
-    fig.update_xaxes(gridcolor=grid_color, zerolinecolor=grid_color)
-    fig.update_yaxes(gridcolor=grid_color, zerolinecolor=grid_color)
     return fig
 
 

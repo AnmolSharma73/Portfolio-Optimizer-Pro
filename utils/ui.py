@@ -10,46 +10,26 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
     """
     st.set_page_config(page_title=f"{page_title} - {APP_NAME}", page_icon=page_icon, layout=layout, initial_sidebar_state="expanded")
     
-    theme = st.session_state.get("theme", "dark")
-    t_bg = "#0E1117" if theme == "dark" else "#F8FAFC"
-    t_fg = "#f1f5f9" if theme == "dark" else "#0f172a"
-    t_card = "#1A1F2E" if theme == "dark" else "#FFFFFF"
-    t_sidebar = "linear-gradient(180deg, #111928, #0e1117, #111928)" if theme == "dark" else "linear-gradient(180deg, #F8FAFC, #FFFFFF, #F8FAFC)"
-    t_border = "rgba(255,255,255,0.06)" if theme == "dark" else "rgba(0,0,0,0.08)"
-    t_muted = "#94a3b8" if theme == "dark" else "#64748b"
-    t_input = "#1a1f2e" if theme == "dark" else "#FFFFFF"
-
-    # Inject global CSS
+    # Inject global CSS using Streamlit's native CSS variables
     st.markdown(f"""
     <style>
     :root {{
-        --theme-bg: {t_bg};
-        --theme-fg: {t_fg};
-        --theme-card: {t_card};
-        --theme-border: {t_border};
-        --theme-muted: {t_muted};
-        --theme-input: {t_input};
+        --theme-bg: var(--background-color);
+        --theme-fg: var(--text-color);
+        --theme-card: var(--secondary-background-color);
+        --theme-border: rgba(128, 128, 128, 0.2);
+        --theme-muted: rgba(128, 128, 128, 0.6);
+        --theme-input: var(--secondary-background-color);
     }}
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
     html, body, [data-testid="stAppViewContainer"] {{
         font-family: 'Inter', sans-serif !important;
-        background-color: {t_bg} !important;
-        color: {t_fg} !important;
     }}
 
     .main .block-container {{ padding: 2rem 1.5rem 2rem; max-width: 1200px; }}
 
-    [data-testid="stSidebar"] {{
-        background: {t_sidebar} !important;
-        border-right: 1px solid {t_border} !important;
-    }}
-    [data-testid="stSidebar"] .stMarkdown h2,
-    [data-testid="stSidebar"] .stMarkdown h3,
-    [data-testid="stSidebar"] p {{
-        color: {t_fg} !important; font-family: 'Inter', sans-serif !important;
-    }}
-    hr {{ border-color: {t_border} !important; }}
+    hr {{ border-color: var(--theme-border) !important; }}
 
     /* Hide native Streamlit navigation */
     [data-testid="stSidebarNav"] {{
@@ -58,8 +38,8 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
 
     /* Global UI Elements */
     [data-testid="stMetric"] {{
-        background: {t_card} !important;
-        border: 1px solid {t_border} !important;
+        background: var(--theme-card) !important;
+        border: 1px solid var(--theme-border) !important;
         border-radius: 12px !important; padding: 1rem !important;
         border-left: 3px solid #667eea !important;
         transition: all 0.3s ease;
@@ -69,8 +49,8 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
         box-shadow: 0 0 15px rgba(102,126,234,0.12);
         transform: translateY(-2px);
     }}
-    [data-testid="stMetric"] label {{ color: {t_muted} !important; font-weight: 500 !important; font-size: 0.8rem !important; text-transform: uppercase; }}
-    [data-testid="stMetric"] [data-testid="stMetricValue"] {{ font-size: 1.4rem !important; font-weight: 700 !important; color: {t_fg} !important; }}
+    [data-testid="stMetric"] label {{ color: var(--theme-muted) !important; font-weight: 500 !important; font-size: 0.8rem !important; text-transform: uppercase; }}
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {{ font-size: 1.4rem !important; font-weight: 700 !important; color: var(--theme-fg) !important; }}
 
     .stButton > button {{
         background: linear-gradient(135deg, #667eea, #764ba2) !important;
@@ -81,31 +61,23 @@ def setup_page(page_title: str, page_icon: str, layout: str = "wide"):
     }}
     .stButton > button:hover {{ box-shadow: 0 6px 20px rgba(102,126,234,0.4) !important; transform: translateY(-2px) !important; }}
 
-    .stTabs [data-baseweb="tab-list"] {{ background: {t_card} !important; border: 1px solid {t_border} !important; border-radius: 10px !important; padding: 3px !important; }}
-    .stTabs [data-baseweb="tab"] {{ color: {t_muted} !important; font-weight: 500 !important; border-radius: 8px !important; }}
+    .stTabs [data-baseweb="tab-list"] {{ background: var(--theme-card) !important; border: 1px solid var(--theme-border) !important; border-radius: 10px !important; padding: 3px !important; }}
+    .stTabs [data-baseweb="tab"] {{ color: var(--theme-muted) !important; font-weight: 500 !important; border-radius: 8px !important; }}
     .stTabs [aria-selected="true"] {{ background: linear-gradient(135deg, #667eea, #764ba2) !important; color: white !important; }}
 
-    [data-testid="stTextInput"] input,
-    [data-testid="stNumberInput"] input,
-    [data-testid="stSelectbox"] > div > div,
-    [data-testid="stMultiSelect"] > div > div {{
-        background-color: {t_input} !important; border-color: {t_border} !important;
-        color: {t_fg} !important; border-radius: 8px !important;
-    }}
+    [data-testid="stExpander"] {{ background: var(--theme-card) !important; border: 1px solid var(--theme-border) !important; border-radius: 12px !important; }}
+    [data-testid="stExpander"] summary {{ font-weight: 600 !important; color: var(--theme-fg) !important; }}
 
-    [data-testid="stExpander"] {{ background: {t_card} !important; border: 1px solid {t_border} !important; border-radius: 12px !important; }}
-    [data-testid="stExpander"] summary {{ font-weight: 600 !important; color: {t_fg} !important; }}
-
-    [data-testid="stPlotlyChart"] {{ border-radius: 12px; overflow: hidden; border: 1px solid {t_border}; background: {t_card} !important; }}
+    [data-testid="stPlotlyChart"] {{ border-radius: 12px; overflow: hidden; border: 1px solid var(--theme-border); background: var(--theme-card) !important; }}
     
-    .brand {{ text-align: center; padding: 0.8rem 0; margin-bottom: 0.5rem; border-bottom: 1px solid {t_border}; }}
+    .brand {{ text-align: center; padding: 0.8rem 0; margin-bottom: 0.5rem; border-bottom: 1px solid var(--theme-border); }}
     .brand .b-icon {{ display: flex; justify-content: center; margin-bottom: 0.4rem; }}
     .brand .b-name {{
         font-size: 1.15rem; font-weight: 800;
         background: linear-gradient(135deg, #667eea, #f093fb);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }}
-    .brand .b-ver {{ font-size: 0.68rem; color: {t_muted}; letter-spacing: 1px; margin-top: 0.1rem; }}
+    .brand .b-ver {{ font-size: 0.68rem; color: var(--theme-muted); letter-spacing: 1px; margin-top: 0.1rem; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -149,16 +121,6 @@ def render_settings():
     with st.sidebar:
         st.markdown("---")
         st.markdown(f"### {_('settings')}")
-        
-        # Theme (Using radio/pills instead of selectbox for better UX)
-        theme_options = ["dark", "light"]
-        current_theme = st.session_state.get("theme", "dark")
-        # Ensure index doesn't crash if current_theme is invalid
-        theme_idx = theme_options.index(current_theme) if current_theme in theme_options else 0
-        new_theme = st.radio(_("theme"), theme_options, index=theme_idx, format_func=lambda x: _(f"{x}_mode"), horizontal=True)
-        if new_theme != current_theme:
-            st.session_state["theme"] = new_theme
-            st.rerun()
 
         # Language
         lang_names = list(SUPPORTED_LANGUAGES.keys())
