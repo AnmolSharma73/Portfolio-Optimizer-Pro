@@ -1,87 +1,132 @@
-# 📊 Portfolio Optimizer Pro
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B.svg?style=for-the-badge&logo=Streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/Pandas-150458.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
+  <img src="https://img.shields.io/badge/Plotly-239120.svg?style=for-the-badge&logo=plotly&logoColor=white" alt="Plotly">
+  
+  <h1>📊 Portfolio Optimizer Pro</h1>
+  <p><b>Advanced Portfolio Construction & Risk Analysis Engine powered by Modern Portfolio Theory (MPT)</b></p>
+  
+  <a href="https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app">
+    <img src="https://img.shields.io/badge/View_Live_Demo-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live Demo">
+  </a>
+</div>
 
-A Python-based portfolio optimization and analysis dashboard built with **Streamlit**, powered by **Modern Portfolio Theory (MPT)**.
+<br>
 
-🌐 **Live Demo:** [https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app](https://anmolsharma73-portfolio-optimizer-pro-app-k94z4r.streamlit.app)
+**Portfolio Optimizer Pro** is a cutting-edge, interactive financial dashboard built with Streamlit. It enables retail investors, analysts, and wealth managers to construct mathematically optimized stock portfolios, visualize efficient frontiers, run probabilistic Monte Carlo simulations, and dive deep into institutional-grade risk metrics.
 
-## 🎯 Features
+---
 
-| Page | Description |
-|------|-------------|
-| 📈 **Stock Analysis** | Research stocks with candlestick charts, technical indicators (SMA, EMA, Bollinger Bands), and key financial statistics |
-| 🎯 **Portfolio Builder** | Optimize portfolio weights using Max Sharpe, Min Volatility, or Equal Weight strategies |
-| 📊 **Efficient Frontier** | Visualize the risk-return efficient frontier and identify optimal portfolios |
-| 🎲 **Monte Carlo Simulation** | Run 10,000+ random portfolio simulations and simulate future price paths |
-| ⚖️ **Risk Analysis** | Comprehensive risk metrics — Sharpe, Sortino, VaR, CVaR, Max Drawdown, Beta, Alpha, and more |
+## ✨ Key Features
 
-## 🛠 Tech Stack
+### 📈 Comprehensive Stock Analysis
+Deep-dive into individual stock performance with interactive Plotly candlestick charts. Overlay technical indicators like **SMA, EMA, and Bollinger Bands**, and compare returns with market benchmarks.
 
-- **Python 3.10+**
-- **Streamlit** — Interactive web dashboard
-- **yfinance** — Real-time stock data from Yahoo Finance
-- **PyPortfolioOpt** — Portfolio optimization (Markowitz)
-- **Plotly** — Interactive charts and visualizations
-- **NumPy / Pandas / SciPy** — Data processing and calculations
+### 🎯 Intelligent Portfolio Builder
+Build and backtest multi-asset portfolios using advanced optimization algorithms:
+- **Maximum Sharpe Ratio** (Highest risk-adjusted return)
+- **Minimum Volatility** (Lowest possible risk)
+- **Equal Weighting** (Naive diversification)
+
+### 📊 The Efficient Frontier
+Visualize your portfolio against the Markowitz Efficient Frontier. Interactively explore the Capital Market Line (CML) and immediately identify whether your asset allocation is mathematically optimal.
+
+### 🎲 Monte Carlo Simulations
+Forecast future portfolio values using geometric Brownian motion. Run 10,000+ stochastic price paths to visualize 95% confidence intervals and understand the probability distribution of your future wealth.
+
+### ⚖️ Institutional Risk Analysis
+Go beyond basic returns with wall-street grade risk metrics:
+- **Risk & Returns:** Annualized Volatility, Alpha, Beta
+- **Tail Risk:** Value at Risk (VaR), Conditional VaR (CVaR), Maximum Drawdown
+- **Ratios:** Sharpe Ratio, Sortino Ratio, Treynor Ratio, Calmar Ratio
+
+---
+
+## 🛠️ Architecture & Tech Stack
+
+- **Frontend:** [Streamlit](https://streamlit.io/) (Fully responsive, dark/light mode native)
+- **Data Engine:** `yfinance` (Real-time stock data), `pandas`, `numpy`
+- **Optimization:** `PyPortfolioOpt`, `scipy.optimize`
+- **Visualization:** `Plotly Graph Objects` & `Plotly Express`
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+Make sure you have **Python 3.10+** and `git` installed on your machine.
+
+### Installation
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/AnmolSharma73/Portfolio-Optimizer-Pro.git
+   cd Portfolio-Optimizer-Pro
+   ```
+
+2. **Create a virtual environment (Recommended)**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Launch the application**
+   ```bash
+   streamlit run app.py
+   ```
+   *The dashboard will automatically open in your browser at `http://localhost:8501`.*
+
+---
 
 ## 📁 Project Structure
 
-```
+```text
 Portfolio Optimizer/
-├── app.py                          # Main landing page
-├── requirements.txt                # Dependencies
-├── .streamlit/config.toml          # Theme configuration
+├── app.py                          # Application entry point
 ├── config/
-│   └── settings.py                 # App constants and color palette
+│   └── settings.py                 # Core constants & asset categorization
 ├── data/
-│   ├── fetcher.py                  # Yahoo Finance data fetcher (cached)
-│   └── processor.py                # Returns, covariance, data cleaning
+│   ├── fetcher.py                  # Robust API polling & fallback logic
+│   └── processor.py                # Covariance & returns calculation
 ├── optimization/
-│   ├── markowitz.py                # Mean-Variance Optimization
-│   ├── efficient_frontier.py       # Efficient Frontier Calculator
-│   ├── monte_carlo.py              # Monte Carlo Simulator
-│   ├── risk_parity.py              # Risk Parity Optimizer
-│   └── black_litterman.py          # Black-Litterman Model
+│   ├── markowitz.py                # Core MPT optimizers
+│   └── monte_carlo.py              # Geometric Brownian Motion simulations
 ├── risk/
-│   └── metrics.py                  # 15+ risk metrics (Sharpe, VaR, etc.)
-├── backtest/
-│   └── engine.py                   # Backtesting engine
+│   └── metrics.py                  # Institutional risk formulas
 ├── visualization/
-│   ├── charts.py                   # Plotly chart functions
-│   └── styles.py                   # Dark theme styling
-├── utils/
-│   └── helpers.py                  # Formatting and session state
-└── pages/
-    ├── 1_📈_Stock_Analysis.py
-    ├── 2_🎯_Portfolio_Builder.py
-    ├── 3_📊_Efficient_Frontier.py
-    ├── 4_🎲_Monte_Carlo.py
-    └── 5_⚖️_Risk_Analysis.py
+│   ├── charts.py                   # Custom Plotly chart engines
+│   └── styles.py                   # Adaptive CSS & Plotly layout templating
+└── pages/                          # Streamlit multi-page routing
 ```
 
-## 🚀 Setup & Run
+---
 
-```bash
-# Install dependencies
-pip install -r requirements.txt
+## 💡 How to Use
 
-# Run the app
-streamlit run app.py
-```
+1. **Configure Settings:** Open the left sidebar to set your preferred language, base currency, and theme.
+2. **Select Assets:** Navigate to the *Portfolio Builder* and add assets from the categorized dropdown menu.
+3. **Set Parameters:** Choose your historical lookback period (e.g., 5y) and risk-free rate.
+4. **Optimize:** Click the "Optimize" button to instantly generate optimal weights and view the resulting risk/return profile.
+5. **Analyze:** Click through the remaining tabs (Efficient Frontier, Monte Carlo, Risk Analysis) to stress-test your newly generated portfolio.
 
-The app will open at **http://localhost:8501**.
+---
 
-## 📖 How to Use
+## 🤝 Contributing
+Contributions, issues, and feature requests are always welcome! Feel free to check the [issues page](https://github.com/AnmolSharma73/Portfolio-Optimizer-Pro/issues) if you want to contribute.
 
-1. **Stock Analysis** — Enter a ticker symbol (e.g., AAPL) to view price history, technicals, and key stats
-2. **Portfolio Builder** — Select 2+ stocks → Choose a strategy → Click "Optimize"
-3. **Efficient Frontier** — View the risk-return curve with your portfolio highlighted
-4. **Monte Carlo** — Run simulations to see the distribution of possible outcomes
-5. **Risk Analysis** — Analyze VaR, drawdown, rolling Sharpe, and benchmark comparison
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📊 Key Concepts
+---
 
-- **Markowitz Mean-Variance Optimization** — Finds the portfolio weights that maximize return for a given risk level
-- **Sharpe Ratio** — Risk-adjusted return metric (higher = better)
-- **Value at Risk (VaR)** — Maximum expected loss at a given confidence level
-- **Efficient Frontier** — The set of optimal portfolios offering the highest return for each risk level
-- **Monte Carlo Simulation** — Random sampling to model uncertainty in portfolio outcomes
+<div align="center">
+  <p>Built with ❤️ by Anmol Sharma</p>
+</div>
