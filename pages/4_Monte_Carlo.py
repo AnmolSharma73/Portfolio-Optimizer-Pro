@@ -257,7 +257,8 @@ if run_future and st.session_state.get('mc_simulator'):
 
     if max_s.get('weights'):
         with st.spinner(f"Simulating {num_paths} future price paths over {future_days} days..."):
-            current_prices_series = pd.Series({t: prices[t].iloc[-1] for t in selected_tickers})
+            valid_tickers = [t for t in selected_tickers if t in prices.columns]
+            current_prices_series = pd.Series({t: prices[t].iloc[-1] for t in valid_tickers})
 
             simulation_paths = simulator.simulate_future_prices(
                 current_prices=current_prices_series,

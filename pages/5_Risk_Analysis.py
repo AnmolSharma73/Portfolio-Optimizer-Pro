@@ -123,6 +123,10 @@ if prices.empty:
 prices = DataProcessor.handle_missing_data(prices)
 returns = DataProcessor.calculate_returns(prices)
 
+if returns.empty or len(returns) < 2:
+    st.error("Not enough historical data to compute risk metrics.")
+    st.stop()
+    
 # Calculate portfolio returns
 weight_arr = np.array([weights.get(t, 1.0/len(selected_tickers)) for t in returns.columns])
 weight_arr = weight_arr / weight_arr.sum()  # Normalize
@@ -137,8 +141,15 @@ if not benchmark_data.empty:
         benchmark_returns = bench_ret['Close']
         # Align
         common_idx = portfolio_returns.index.intersection(benchmark_returns.index)
-        portfolio_returns = portfolio_returns.loc[common_idx]
-        benchmark_returns = benchmark_returns.loc[common_idx]
+        if len(common_idx) > 0:
+            portfolio_returns = portfolio_returns.loc[common_idx]
+            benchmark_returns = benchmark_returns.loc[common_idx]
+        else:
+            benchmark_returns = None
+            
+if portfolio_returns.empty:
+    st.error("Not enough historical data to compute risk metrics.")
+    st.stop()
 
 # ── Calculate All Metrics ────────────────────────────────────────────────────
 all_metrics = RiskMetrics.get_all_metrics(

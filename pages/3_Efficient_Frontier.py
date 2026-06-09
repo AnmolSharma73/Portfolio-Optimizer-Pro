@@ -229,10 +229,18 @@ if generate_btn:
 
         # 2. Calculate returns & covariance ────────────────────────────────
         returns = DataProcessor.calculate_returns(prices)
+        if returns.empty or len(returns) < 2:
+            st.error("Not enough valid historical return data to compute the efficient frontier.")
+            st.stop()
+            
         cov_matrix = DataProcessor.calculate_covariance_matrix(
             returns, method="ledoit_wolf"
         )
         expected_returns = DataProcessor.calculate_annualized_returns(returns)
+        
+        if expected_returns.empty or cov_matrix.empty:
+            st.error("Failed to compute expected returns or covariance matrix.")
+            st.stop()
 
         # 3. Compute efficient frontier ────────────────────────────────────
         ef_calc = EfficientFrontierCalculator(

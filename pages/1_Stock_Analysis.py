@@ -171,12 +171,12 @@ st.markdown(f"""
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 stats = {
-    _("market_cap"): curr_sym + format_large_number((stock_info.get('marketCap') or 0) * fx),
-    "52W High": format_currency(((stock_info.get('fiftyTwoWeekHigh') or 0) * fx), curr_sym),
-    "52W Low": format_currency(((stock_info.get('fiftyTwoWeekLow') or 0) * fx), curr_sym),
-    "Avg Volume": format_large_number(stock_info.get('averageVolume') or 0),
+    _("market_cap"): (curr_sym + format_large_number(stock_info.get('marketCap') * fx)) if stock_info.get('marketCap') else "N/A",
+    "52W High": format_currency((stock_info.get('fiftyTwoWeekHigh') * fx), curr_sym) if stock_info.get('fiftyTwoWeekHigh') else "N/A",
+    "52W Low": format_currency((stock_info.get('fiftyTwoWeekLow') * fx), curr_sym) if stock_info.get('fiftyTwoWeekLow') else "N/A",
+    "Avg Volume": format_large_number(stock_info.get('averageVolume')) if stock_info.get('averageVolume') else "N/A",
     "P/E Ratio": f"{stock_info.get('trailingPE', 'N/A'):.2f}" if isinstance(stock_info.get('trailingPE'), (int, float)) else "N/A",
-    "Div Yield": format_percentage(stock_info.get('dividendYield') or 0) if stock_info.get('dividendYield') else "N/A"
+    "Div Yield": format_percentage(stock_info.get('dividendYield')) if stock_info.get('dividendYield') else "N/A"
 }
 
 for col, (label, value) in zip([col1, col2, col3, col4, col5, col6], stats.items()):
